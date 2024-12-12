@@ -46,3 +46,30 @@ export async function changePassword(req, res) {
     res.status(400).send({ message: "Error: " + error.message });
   }
 }
+
+export async function updateUserDetails(req, res) {
+  try {
+    const { username, ...updates } = req.body;
+
+    // Check if user exists
+    const user = await userModel.findOne({ username });
+    if (!user) {
+      return res.status(404).send({ message: "User does not exist" });
+    }
+
+    // Update the user details
+    Object.keys(updates).forEach((key) => {
+      user[key] = updates[key];
+    });
+
+    await user.save();
+    return res
+      .status(200)
+      .send({ message: "User details updated successfully" });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return res
+      .status(500)
+      .send({ message: "Error updating user: " + error.message });
+  }
+}
