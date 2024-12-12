@@ -4,15 +4,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../constants.js";
 
-export async function getUsers(req, res) {
-  try {
-    const users = await userModel.find();
-    res.status(200).send(users);
-  } catch (err) {
-    res.status(400).send({ message: "Error: " + err.message });
-  }
-}
-
 export async function registerUser(req, res) {
   try {
     const body = req.body;
