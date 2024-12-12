@@ -2,6 +2,7 @@
 import userModel from "../Models/UserModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../constants.js";
 
 export async function getUsers(req, res) {
   try {
@@ -31,5 +32,38 @@ export async function registerUser(req, res) {
     res.status(201).send({ message: "User created successfully" });
   } catch (err) {
     res.status(400).send({ message: "Error: " + err.message });
+  }
+}
+
+export async function loginUser(req, res) {
+  try {
+    const body = req.body;
+
+    // Validate input
+    if (!body.username || !body.password) {
+      return res
+        .status(400)
+        .send({ message: "Username and password are required" });
+    }
+
+    // Check if the user exists
+    const user = await userModel.findOne({ username: body.username });
+    if (!user) {
+      return res.status(400).send({ message: "User does not exist" });
+    }
+
+    // Check if the password is correct
+    const isMatch = await bcrypt.compare(body.password, user.password);
+    if (!isMatch) {
+      return res.status(400).send({ message: "Invalid credentials" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ username: body.username }, SECRET_KEY);
+
+    return res.status(200).send({ token });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    return res.status(500).send({ message: "Internal server error" });
   }
 }
