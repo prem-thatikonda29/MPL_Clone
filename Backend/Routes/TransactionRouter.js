@@ -1,7 +1,12 @@
 import express from "express";
-import { createTransaction } from "../Controllers/TransactionController.js";
+import {
+  getTransactions,
+  createTransaction,
+} from "../Controllers/TransactionController.js";
 
 const transactionRouter = express.Router();
+
+transactionRouter.get("/", getTransactions);
 
 transactionRouter.post("/create", createTransaction);
 
