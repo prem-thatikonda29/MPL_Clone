@@ -3,6 +3,8 @@ import cors from "cors";
 import authRouter from "./Routes/AuthRouter.js";
 import userRouter from "./Routes/UserRouter.js";
 import transactionRouter from "./Routes/TransactionRouter.js";
+import gameRouter from "./Routes/GameRouter.js";
+import leaderboardRouter from "./Routes/LeaderboardRouter.js";
 import dbConnector from "./dbConnection.js";
 
 import verifyToken from "./middlewares/authMiddleware.js";
@@ -17,6 +19,9 @@ app.use(cors());
 app.use("/auth", authRouter);
 
 app.use("/users", userRouter);
+
+app.use("/games", gameRouter);
+app.use("/leaderboards", leaderboardRouter);
 
 app.use(verifyToken);
 

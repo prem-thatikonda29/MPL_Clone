@@ -4,15 +4,14 @@ const leaderboardSchema = new mongoose.Schema(
   {
     game: { type: String, required: true },
     gameId: {
-      //   type: mongoose.Schema.Types.ObjectId,
-      type: Number,
+      type: mongoose.Schema.Types.ObjectId,
       // required: true, // Uncomment if you want to ensure gameId is provided
-      // ref: "games", // Uncomment if the gameId references a games collection
+      ref: "games",
     },
     leaderboard: [
       {
         username: { type: String, required: true },
-        userid: {
+        userId: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
           ref: "users",
@@ -20,7 +19,6 @@ const leaderboardSchema = new mongoose.Schema(
         highscore: { type: Number, required: true },
       },
     ],
-    default: [],
   },
   { timestamps: true }
 );
