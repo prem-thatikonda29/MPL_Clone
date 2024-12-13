@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import authRouter from "./Routes/AuthRouter.js";
 import userRouter from "./Routes/UserRouter.js";
+import transactionRouter from "./Routes/TransactionRouter.js";
 import dbConnector from "./dbConnection.js";
 
 import verifyToken from "./middlewares/authMiddleware.js";
@@ -18,6 +19,8 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 
 app.use(verifyToken);
+
+app.use("/transactions", transactionRouter);
 
 app.get("/health", (req, res) => {
   res.send("Server is running");
