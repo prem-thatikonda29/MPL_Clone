@@ -4,6 +4,8 @@ import authRouter from "./Routes/AuthRouter.js";
 import userRouter from "./Routes/UserRouter.js";
 import dbConnector from "./dbConnection.js";
 
+import verifyToken from "./middlewares/authMiddleware.js";
+
 const app = express();
 
 dbConnector();
@@ -14,6 +16,8 @@ app.use(cors());
 app.use("/auth", authRouter);
 
 app.use("/users", userRouter);
+
+app.use(verifyToken);
 
 app.get("/health", (req, res) => {
   res.send("Server is running");
