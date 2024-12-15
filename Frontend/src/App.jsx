@@ -3,6 +3,7 @@ import FlappyBird from "./Games/FlappyBird.jsx";
 import Register from "./Pages/Register.jsx";
 import Login from "./Pages/Login.jsx";
 import Home from "./Pages/Home.jsx";
+import Robot from "./Models/Robot.jsx";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/flappybird" element={<FlappyBird />} />
+          <Route path="/test" element={<Robot />} />
         </Routes>
       </Router>
     </div>
