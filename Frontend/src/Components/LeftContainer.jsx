@@ -1,5 +1,5 @@
 import Robot from "../Models/Robot";
-import styles from "../Pages/Auth.module.css";
+import styles from "../Styles/Auth.module.css";
 
 const LeftContainer = () => {
   return (

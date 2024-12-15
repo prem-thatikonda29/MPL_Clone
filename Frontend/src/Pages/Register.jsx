@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import LeftContainer from "../Components/LeftContainer";
-import styles from "./Auth.module.css";
+import styles from "../Styles/Auth.module.css";
 
 const Register = () => {
   const nav = useNavigate();

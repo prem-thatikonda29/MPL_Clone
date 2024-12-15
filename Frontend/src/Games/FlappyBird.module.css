@@ -1,4 +1,4 @@
-body {
+/* body {
   margin: 0;
   font-family: Arial, sans-serif;
   display: flex;
@@ -6,11 +6,11 @@ body {
   align-items: center;
   background-color: #87ceeb;
   height: 100vh;
-}
+} */
 
 .game {
   position: relative;
-  background-color: #add8e6;
+  /* background-color: #add8e6; */
   overflow: hidden;
   border: 2px solid #000;
 }
