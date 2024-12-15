@@ -24,7 +24,7 @@
   align-items: center;
   background-color: #e3e3e3;
   padding: 2rem;
-  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 8px 8px rgba(0, 0, 0, 0.2); */
   border-radius: 40px 0 0 40px;
   /* border-left: 4px solid rgb(255, 255, 255, 0.8); */
 }
@@ -49,12 +49,14 @@ label {
 }
 
 input {
-  width: 100%;
+  width: 92%;
   padding: 0.75rem;
   margin-bottom: 1rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
+  transition: border-color 0.3s ease;
+  /* max-width: 350px; */
 }
 
 input:focus {
@@ -63,7 +65,7 @@ input:focus {
 }
 
 button {
-  width: 100%;
+  width: 98%;
   padding: 0.75rem;
   background: #ff3e3e;
   color: white;
@@ -93,4 +95,18 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+form div {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-flow: column wrap;
+  width: 100%;
+}
+
+.forgotLink {
+  font-size: 12px;
+  align-self: flex-end;
+  margin: -0.25rem 8px 0.5rem 0;
 }

@@ -1,16 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import styles from "./Register.module.css";
-import Robot from "../Models/Robot";
-
-const LeftContainer = () => {
-  return (
-    <div className={styles.leftContainer}>
-      <Robot />
-    </div>
-  );
-};
+import LeftContainer from "../Components/LeftContainer";
+import styles from "./Auth.module.css";
 
 const Register = () => {
   const nav = useNavigate();
@@ -76,18 +68,7 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Enter your full name"
               required
-            />
-          </div>
-          <div>
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Enter your username"
-              required
+              autoComplete="off"
             />
           </div>
           <div>
@@ -100,6 +81,20 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Enter your email"
               required
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Enter your username"
+              required
+              autoComplete="off"
             />
           </div>
           <div>
@@ -112,9 +107,12 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Enter your password"
               required
+              autoComplete="off"
             />
           </div>
-          <button type="submit">Register</button>
+          <div>
+            <button type="submit">Register</button>
+          </div>
         </form>
         <div>
           <p>
