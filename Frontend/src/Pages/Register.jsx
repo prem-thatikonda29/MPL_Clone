@@ -1,6 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import styles from "./Register.module.css";
+import Robot from "../Models/Robot";
+
+const LeftContainer = () => {
+  return (
+    <div className={styles.leftContainer}>
+      <Robot />
+    </div>
+  );
+};
+
 const Register = () => {
   const nav = useNavigate();
 
@@ -50,89 +61,68 @@ const Register = () => {
   };
 
   return (
-    <div className="w-screen h-screen min-h-screen bg-gradient-to-br from-red-700 via-black to-red-900 flex items-center justify-center">
-      <div className="bg-black bg-opacity-70 p-8 rounded-lg w-full sm:w-96">
-        <h1 className="text-4xl font-extrabold text-center text-white mb-6">
-          Registration
-        </h1>
+    <section className={styles.container}>
+      <LeftContainer />
+      <div className={styles.form}>
+        <h1>Registration</h1>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="text-white font-semibold" htmlFor="name">
-              Name
-            </label>
+          <div>
+            <label htmlFor="name">Name</label>
             <input
               type="text"
               id="name"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full mt-2 px-4 py-2 rounded-md text-gray-800"
               placeholder="Enter your full name"
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="text-white font-semibold" htmlFor="username">
-              Username
-            </label>
+          <div>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               id="username"
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full mt-2 px-4 py-2 rounded-md text-gray-800"
               placeholder="Enter your username"
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="text-white font-semibold" htmlFor="email">
-              Email
-            </label>
+          <div>
+            <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full mt-2 px-4 py-2 rounded-md text-gray-800"
               placeholder="Enter your email"
               required
             />
           </div>
-          <div className="mb-6">
-            <label className="text-white font-semibold" htmlFor="password">
-              Password
-            </label>
+          <div>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full mt-2 px-4 py-2 rounded-md text-gray-800"
               placeholder="Enter your password"
               required
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-red-600 to-red-800 py-2 rounded-md text-white font-bold hover:bg-gradient-to-l focus:outline-none"
-          >
-            Register
-          </button>
+          <button type="submit">Register</button>
         </form>
-        <div className="mt-4 text-center">
-          <p className="text-white text-sm">
-            Already have an account?{" "}
-            <a href="/login" className="text-red-400 hover:text-red-600">
-              Login here
-            </a>
+        <div>
+          <p>
+            Already have an account? <a href="/login">Login here</a>
           </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
