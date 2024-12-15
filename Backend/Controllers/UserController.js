@@ -19,7 +19,7 @@ export async function getUserDetails(req, res) {
       return res.status(404).send({ message: "User not found" });
     }
     res.status(200).send({ user });
-  } catch (error) {
+  } catch (err) {
     res.status(400).send({ message: "Error: " + err.message });
   }
 }

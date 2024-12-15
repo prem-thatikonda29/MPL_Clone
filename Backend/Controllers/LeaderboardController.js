@@ -4,7 +4,7 @@ import gameModel from "../Models/GameModel.js";
 export async function getLeaderboard(req, res) {
   try {
     const leaderboard = await leaderboardModel
-      .findOne({ gameId: req.params.gameId }) 
+      .findOne({ gameId: req.params.gameId })
       .select("leaderboard") // Select only the `leaderboard` field
       .populate("gameId", "name description") // Optional: Populate gameId with name and description if you want
       .sort({ "leaderboard.highscore": -1 }); // Sort leaderboard by highscore in descending order
@@ -71,6 +71,34 @@ export async function addToLeaderboard(req, res) {
     res
       .status(200)
       .send({ message: "Leaderboard updated successfully", leaderboard });
+  } catch (error) {
+    res.status(500).send({ message: "Error: " + error.message });
+  }
+}
+
+export async function updateHighscore(req, res) {
+  try {
+    const { gameId, userId, highscore } = req.body;
+
+    // Find the game and update the user's highscore if it's higher
+    const game = await leaderboardModel.findOneAndUpdate(
+      { gameId, "leaderboard.userId": userId }, // Match game and user
+      {
+        $max: { "leaderboard.$.highscore": highscore }, // Update only if the new score is higher
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!game) {
+      return res
+        .status(404)
+        .send({ message: "Game or user not found in leaderboard" });
+    }
+
+    res.status(200).send({
+      message: "Highscore updated successfully",
+      leaderboard: game.leaderboard,
+    });
   } catch (error) {
     res.status(500).send({ message: "Error: " + error.message });
   }

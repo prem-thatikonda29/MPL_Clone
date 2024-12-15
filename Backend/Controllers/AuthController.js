@@ -52,7 +52,7 @@ export async function loginUser(req, res) {
     // Generate JWT token
     const token = jwt.sign({ username: body.username }, SECRET_KEY);
 
-    return res.status(200).send({ message: "Login Successful", token });
+    return res.status(200).send({ message: "Login Successful", token, user });
   } catch (error) {
     console.error("Error logging in:", error);
     return res.status(500).send({ message: "Internal server error" });

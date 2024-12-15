@@ -12,6 +12,8 @@ const Login = () => {
     password: "",
   });
 
+  // const [user, setUser] = useState({});
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -38,10 +40,11 @@ const Login = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Message:", data);
+        console.log(data);
         if (data.token) {
           // Store token and navigate to home
           localStorage.setItem("token", data.token);
+          localStorage.setItem("user", data.user._id);
           nav("/home");
         }
       })
@@ -83,7 +86,9 @@ const Login = () => {
             />
           </div>
           <div>
-            <a href="/forgot-password" className={styles.forgotLink}>Forgot password?</a>
+            <a href="/forgot-password" className={styles.forgotLink}>
+              Forgot password?
+            </a>
           </div>
           <div>
             <button type="submit">Login</button>

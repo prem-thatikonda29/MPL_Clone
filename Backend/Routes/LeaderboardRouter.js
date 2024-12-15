@@ -2,6 +2,7 @@ import express from "express";
 import {
   addToLeaderboard,
   getLeaderboard,
+  updateHighscore,
 } from "../Controllers/LeaderboardController.js";
 
 const leaderboardRouter = express.Router();
@@ -11,5 +12,8 @@ leaderboardRouter.get("/:gameId", getLeaderboard);
 
 // Route to add a new leaderboard entry
 leaderboardRouter.post("/add", addToLeaderboard);
+
+// updating a high score
+leaderboardRouter.put("/update", updateHighscore);
 
 export default leaderboardRouter;

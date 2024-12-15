@@ -8,6 +8,7 @@ const gameSchema = new mongoose.Schema(
       unique: true,
     }, // Unique game ID
     description: { type: String, required: true }, // Description of the game
+    photo: { type: String, required: true }, // URL of the game photo
   },
   { timestamps: true } // Optional: Tracks when the game was created/updated
 );

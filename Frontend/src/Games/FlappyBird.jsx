@@ -15,6 +15,32 @@ function FlappyBird() {
   const pipeWidth = 50;
   const birdSize = 40;
   const [pipePassed, setPipePassed] = useState(false); // To track if bird has crossed pipe
+  // const [leaderboard, setLeaderboard] = useState([]);
+
+  // const userID = localStorage.getItem("user");
+  // fetch leaderboard
+  useEffect(() => {
+    fetch("http://localhost:8000/leaderboards/675bebfc39d9ec117ca4b4cb", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch leaderboard");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setHighScore(data[0]["highscore"]);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
 
   useEffect(() => {
     let gravity;
@@ -84,6 +110,7 @@ function FlappyBird() {
     setIsGameOver(true);
     setHighScore((prevHighScore) => {
       const newHighScore = Math.max(score, prevHighScore);
+
       localStorage.setItem("highScore", newHighScore);
       return newHighScore;
     });
