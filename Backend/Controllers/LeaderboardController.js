@@ -1,4 +1,5 @@
 import leaderboardModel from "../Models/LeaderboardModel.js";
+import mongoose from "mongoose";
 import gameModel from "../Models/GameModel.js";
 
 export async function getLeaderboard(req, res) {
@@ -18,6 +19,43 @@ export async function getLeaderboard(req, res) {
     );
     res.send(sortedLeaderboard); // Return only the `leaderboard` field
   } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+}
+
+export async function getUserScore(req, res) {
+  try {
+    const { gameId, userId } = req.params;
+
+    // Validate `gameId` and `userId`
+    if (
+      !mongoose.Types.ObjectId.isValid(gameId) ||
+      !mongoose.Types.ObjectId.isValid(userId)
+    ) {
+      return res.status(400).send({ message: "Invalid gameId or userId" });
+    }
+
+    // Fetch the leaderboard for the game
+    const leaderboard = await leaderboardModel.findOne({
+      gameId: new mongoose.Types.ObjectId(gameId),
+    });
+
+    if (!leaderboard) {
+      return res.status(404).send({ message: "Game not found" });
+    }
+
+    // Find the user's score within the leaderboard
+    const userEntry = leaderboard.leaderboard.find(
+      (entry) => entry.userId.toString() === userId
+    );
+
+    if (!userEntry) {
+      return res.status(404).send({ message: "User score not found" });
+    }
+
+    res.send({ username: userEntry.username, score: userEntry.highscore });
+  } catch (error) {
+    // console.error("Error:", error);
     res.status(500).send({ message: error.message });
   }
 }

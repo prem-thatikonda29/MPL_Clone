@@ -21,6 +21,7 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 
 app.use("/games", gameRouter);
+
 app.use("/leaderboards", leaderboardRouter);
 
 app.use(verifyToken);

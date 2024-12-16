@@ -5,7 +5,7 @@ const leaderboardSchema = new mongoose.Schema(
     game: { type: String, required: true },
     gameId: {
       type: mongoose.Schema.Types.ObjectId,
-      // required: true, // Uncomment if you want to ensure gameId is provided
+      required: true,
       ref: "games",
     },
     leaderboard: [
@@ -16,7 +16,7 @@ const leaderboardSchema = new mongoose.Schema(
           required: true,
           ref: "users",
         },
-        highscore: { type: Number, required: true },
+        highscore: { type: Number, required: true, default: 0 },
       },
     ],
   },
