@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useParams } from "react-router-dom";
-
-// Import all game components upfront
-import FlappyBird from "./Games/FlappyBird.jsx";
-import Rummy from "./Games/Rummy.jsx";
-import SnakesLadders from "./Games/SnakesLadders.jsx";
 
 // Map game components with their database `component` field
 const gameComponents = {
-  FlappyBird: FlappyBird,
-  Rummy: Rummy,
-  SnakesLadders: SnakesLadders,
+  FlappyBird: React.lazy(() => import("../Games/FlappyBird.jsx")),
+  Rummy: React.lazy(() => import("../Games/Rummy.jsx")),
+  SnakesLadders: React.lazy(() => import("../Games/SnakesLadders.jsx")),
 };
 
 function GameLoader() {
@@ -50,9 +45,11 @@ function GameLoader() {
 
   return (
     <div>
-      <h1>{game.name}</h1>
-      <p>{game.description}</p>
-      <GameComponent />
+      <Suspense fallback={<h2>Loading Game...</h2>}>
+        <h1>{game.name}</h1>
+        <p>{game.description}</p>
+        <GameComponent />
+      </Suspense>
     </div>
   );
 }

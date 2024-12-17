@@ -1,18 +1,17 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { UserContext } from "../userContext.jsx";
 import styles from "../Styles/Auth.module.css";
 import LeftContainer from "../Components/LeftContainer.jsx";
 
 const Login = () => {
   const nav = useNavigate();
+  const { setUser } = useContext(UserContext); // Context to update the user state
 
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
-
-  // const [user, setUser] = useState({});
 
   const handleChange = (e) => {
     setFormData({
@@ -24,7 +23,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Clear form
+    // Clear form after submitting
     setFormData({
       username: "",
       password: "",
@@ -32,20 +31,28 @@ const Login = () => {
 
     // Send data to the server
     fetch("http://localhost:8000/auth/login", {
-      method: "POST", // Specify the request method
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(formData), // Use formData, not 'user'
     })
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
         if (data.token) {
-          // Store token and navigate to home
+          // Store token and user details in local storage
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", data.user._id);
+
+          // Update context with the logged-in user's information
+          setUser(data.user); // Update context with user data
+
+          // Redirect to home page
           nav("/home");
+        } else {
+          console.log("Login failed: ", data.message);
+          // Handle login failure (e.g., show error message)
         }
       })
       .catch((error) => {

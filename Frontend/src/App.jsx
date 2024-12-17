@@ -1,11 +1,10 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // importing the dynamic game loader
-import GameLoader from "./GameLoader.jsx";
+import GameLoader from "./Components/Gameloader.jsx";
+
+// importing the context provider
+import { UserProvider } from "./userContext.jsx";
 
 // Import other components
 import Register from "./Pages/Register.jsx";
@@ -15,7 +14,7 @@ import Robot from "./Models/Robot.jsx";
 
 function App() {
   return (
-    <div>
+    <UserProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -30,7 +29,7 @@ function App() {
           <Route path="/test" element={<Robot />} />
         </Routes>
       </Router>
-    </div>
+    </UserProvider>
   );
 }
 

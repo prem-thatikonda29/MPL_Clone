@@ -1,25 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import Navbar from "../Components/Navbar";
 import Gamegrid from "../Components/Gamegrid";
-// import { useNavigate } from "react-router-dom";
+import { UserContext } from "../userContext";
 
 import styles from "../Styles/Home.module.css";
-import { useEffect } from "react";
 
 const Home = () => {
-  const userID = localStorage.getItem("user");
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
-    // getting the user
-    fetch(`http://localhost:8000/users/${userID}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  });
+    // Only fetch if user is available
+    if (user && user._id) {
+      fetch(`http://localhost:8000/users/${user._id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data); // Handle user data here
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      console.log("User not logged in");
+    }
+  }, [user]);
 
   return (
     <section className={styles.container}>

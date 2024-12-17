@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../userContext"; // Import UserContext
 
 import LeftContainer from "../Components/LeftContainer";
 import styles from "../Styles/Auth.module.css";
 
 const Register = () => {
   const nav = useNavigate();
+  const { setUser } = useContext(UserContext); // Access setUser from context
 
   const [formData, setFormData] = useState({
     name: "",
@@ -44,8 +46,14 @@ const Register = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Message:", data);
-        // Redirect to login page
-        nav("/home");
+
+        if (data.user) {
+          // Store user in context after successful registration
+          setUser(data.user);
+
+          // Redirect to home page or any page after successful registration
+          nav("/home");
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
