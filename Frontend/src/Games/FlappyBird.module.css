@@ -66,3 +66,19 @@ button {
 button:hover {
   background-color: #ffc107;
 }
+
+.start_screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.start_screen button {
+  background-color: #ffc107;
+}

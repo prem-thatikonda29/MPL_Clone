@@ -6,7 +6,7 @@ import styles from "../Styles/Home.module.css";
 
 const Home = () => {
   const { user } = useContext(UserContext);
-
+  
   useEffect(() => {
     if (user) {
       fetch(`http://localhost:8000/users/${user._id}`)

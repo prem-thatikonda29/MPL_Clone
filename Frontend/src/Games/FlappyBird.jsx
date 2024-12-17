@@ -11,6 +11,7 @@ function FlappyBird() {
     Number(localStorage.getItem("highScore")) || 0
   );
   const [isGameOver, setIsGameOver] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false); // Control game start
   const gameHeight = 600;
   const gameWidth = 400;
   const pipeWidth = 50;
@@ -24,7 +25,6 @@ function FlappyBird() {
   // Fetch leaderboard and username
   useEffect(() => {
     if (user) {
-      // Fetch leaderboard for the current game
       fetch(`http://localhost:8000/leaderboards/${gameId}`, {
         method: "GET",
         headers: {
@@ -34,56 +34,52 @@ function FlappyBird() {
       })
         .then((response) => response.json())
         .then((data) => {
-          // Handle the fetched leaderboard data
-          console.log(data);
-
-          // Find the user entry in the leaderboard
           const userEntry = data.leaderboard.find(
             (entry) => entry.userId.toString() === user._id.toString()
           );
 
           if (userEntry) {
-            setUsername(userEntry.username); // Set the username
-            setHighScore(userEntry.highscore); // Set the highscore
+            setUsername(userEntry.username);
+            setHighScore(userEntry.highscore);
           } else {
-            setUsername(user.username); // If not in leaderboard, use user's current username
-            setHighScore(0); // Default score if user not found
+            setUsername(user.username);
+            setHighScore(0);
           }
         })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        .catch((error) => console.error("Error:", error));
     }
   }, [user]);
 
   useEffect(() => {
     let gravity;
-    if (!isGameOver) {
+    if (gameStarted && !isGameOver) {
       gravity = setInterval(() => {
         setBirdPosition((prev) => Math.min(prev + 5, gameHeight - birdSize));
       }, 30);
     }
     return () => clearInterval(gravity);
-  }, [isGameOver]);
+  }, [gameStarted, isGameOver]);
 
   useEffect(() => {
     let pipeInterval;
-    if (!isGameOver) {
+    if (gameStarted && !isGameOver) {
       pipeInterval = setInterval(() => {
         setPipeLeft((prev) => {
           if (prev < -pipeWidth) {
             setPipeHeight(Math.random() * (gameHeight - 150));
-            setPipePassed(false); // Reset flag when pipe goes offscreen
-            return gameWidth; // Reset pipe position to the right
+            setPipePassed(false);
+            return gameWidth;
           }
-          return prev - 5; // Move pipe to the left
+          return prev - 5;
         });
       }, 30);
     }
     return () => clearInterval(pipeInterval);
-  }, [isGameOver]);
+  }, [gameStarted, isGameOver]);
 
   useEffect(() => {
+    if (!gameStarted) return;
+
     const birdTop = birdPosition;
     const birdBottom = birdPosition + birdSize;
     const pipeTop = pipeHeight;
@@ -97,36 +93,34 @@ function FlappyBird() {
       endGame();
     }
 
-    // Check if the bird hits the bottom
     if (birdBottom >= gameHeight) {
       endGame();
     }
 
-    // Only increment the score if the bird crosses the pipe's right edge
     if (pipeLeft + pipeWidth <= 0 && !pipePassed) {
-      setScore((s) => s + 1); // Increment score only when the pipe has fully passed
-      setPipePassed(true); // Mark that the pipe has been passed
+      setScore((s) => s + 1);
+      setPipePassed(true);
     }
-  }, [birdPosition, pipeLeft, pipeHeight, pipePassed]);
+  }, [birdPosition, pipeLeft, pipeHeight, pipePassed, gameStarted]);
 
   useEffect(() => {
     const handleSpacebar = (event) => {
-      if (event.code === "Space" && !isGameOver) {
+      if (event.code === "Space" && gameStarted && !isGameOver) {
         setBirdPosition((prev) => Math.max(prev - 50, 0));
       }
     };
 
     window.addEventListener("keydown", handleSpacebar);
     return () => window.removeEventListener("keydown", handleSpacebar);
-  }, [isGameOver]);
+  }, [gameStarted, isGameOver]);
 
-  const resetGame = () => {
+  const startGame = () => {
+    setGameStarted(true);
     setIsGameOver(false);
-    setBirdPosition(300); // Reset bird position
-    setScore(0); // Reset score
-    setPipeLeft(500); // Reset pipe position
-    setPipeHeight(200); // Reset pipe height
-    setPipePassed(false); // Reset pipe pass status
+    setBirdPosition(300);
+    setPipeLeft(500);
+    setScore(0);
+    setPipePassed(false);
   };
 
   const endGame = () => {
@@ -134,7 +128,6 @@ function FlappyBird() {
     const newHighScore = Math.max(score, highScore);
     setHighScore(newHighScore);
 
-    // Update or add the new score in the leaderboard
     fetch("http://localhost:8000/leaderboards/add", {
       method: "POST",
       headers: {
@@ -142,7 +135,7 @@ function FlappyBird() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({
-        gameId: "675bebfc39d9ec117ca4b4cb", // Your gameId
+        gameId: "675bebfc39d9ec117ca4b4cb",
         userId: user._id,
         username: user.username,
         highscore: newHighScore,
@@ -158,39 +151,50 @@ function FlappyBird() {
       className={styles.game}
       style={{ height: gameHeight, width: gameWidth }}
     >
-      <div
-        className={styles.bird}
-        style={{
-          top: birdPosition,
-          height: birdSize,
-          width: birdSize,
-        }}
-      ></div>
-      <div
-        className={styles.pipe}
-        style={{
-          height: pipeHeight,
-          width: pipeWidth,
-          left: pipeLeft,
-          top: 0,
-        }}
-      ></div>
-      <div
-        className={styles.pipe}
-        style={{
-          height: gameHeight - pipeHeight - 150,
-          width: pipeWidth,
-          left: pipeLeft,
-          bottom: 0,
-        }}
-      ></div>
-      <div className={styles.score}>Score: {score}</div>
-      <div className={styles.high_score}>High Score: {highScore}</div>
-      {isGameOver && (
-        <div className={styles.game_over}>
-          <p>Game Over!</p>
-          <button onClick={resetGame}>Restart</button>
+      {!gameStarted && (
+        <div className={styles.start_screen}>
+          <p>Welcome to Flappy Bird!</p>
+          <button onClick={startGame}>Start Game</button>
         </div>
+      )}
+
+      {gameStarted && (
+        <>
+          <div
+            className={styles.bird}
+            style={{
+              top: birdPosition,
+              height: birdSize,
+              width: birdSize,
+            }}
+          ></div>
+          <div
+            className={styles.pipe}
+            style={{
+              height: pipeHeight,
+              width: pipeWidth,
+              left: pipeLeft,
+              top: 0,
+            }}
+          ></div>
+          <div
+            className={styles.pipe}
+            style={{
+              height: gameHeight - pipeHeight - 150,
+              width: pipeWidth,
+              left: pipeLeft,
+              bottom: 0,
+            }}
+          ></div>
+          <div className={styles.score}>Score: {score}</div>
+          <div className={styles.high_score}>High Score: {highScore}</div>
+          {isGameOver && (
+            <div className={styles.game_over}>
+              <p>Game Over!</p>
+              <button onClick={startGame}>Restart</button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

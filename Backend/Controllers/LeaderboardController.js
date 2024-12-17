@@ -197,7 +197,7 @@ export const addToLeaderboard = async (req, res) => {
   }
 };
 
-// Function to update the highscore for a user in the leaderboard
+
 export async function updateHighscore(req, res) {
   try {
     const { gameId, userId, highscore } = req.body;

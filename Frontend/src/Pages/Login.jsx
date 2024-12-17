@@ -6,7 +6,7 @@ import LeftContainer from "../Components/LeftContainer.jsx";
 
 const Login = () => {
   const nav = useNavigate();
-  const { setUser } = useContext(UserContext); // Context to update the user state
+  const { setUser } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -35,7 +35,7 @@ const Login = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData), // Use formData, not 'user'
+      body: JSON.stringify(formData),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -43,10 +43,9 @@ const Login = () => {
         if (data.token) {
           // Store token and user details in local storage
           localStorage.setItem("token", data.token);
-          localStorage.setItem("user", data.user._id);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-          // Update context with the logged-in user's information
-          setUser(data.user); // Update context with user data
+          setUser(data.user);
 
           // Redirect to home page
           nav("/home");

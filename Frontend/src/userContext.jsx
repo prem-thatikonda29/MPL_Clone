@@ -7,10 +7,10 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+    const token = localStorage.getItem("token");
+    if (storedUser && token) {
       try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser); // Set the user if valid
+        setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error("Error parsing user from localStorage:", error);
         // Optionally clear invalid data
