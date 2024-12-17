@@ -13,7 +13,7 @@ const Gamegrid = () => {
         console.log(data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [games]);
 
   return (
     <div className={styles.games_container}>
