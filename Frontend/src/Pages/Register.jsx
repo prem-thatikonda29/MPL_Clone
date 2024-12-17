@@ -1,13 +1,13 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../userContext"; // Import UserContext
+import { UserContext } from "../userContext";
 
 import LeftContainer from "../Components/LeftContainer";
 import styles from "../Styles/Auth.module.css";
 
 const Register = () => {
   const nav = useNavigate();
-  const { setUser } = useContext(UserContext); // Access setUser from context
+  const { setUser } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -25,7 +25,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("User Registered:", formData);
+    // console.log("User Registered:", formData);
 
     // Clear form
     setFormData({
@@ -37,7 +37,7 @@ const Register = () => {
 
     // Send data to the server
     fetch("http://localhost:8000/auth/register", {
-      method: "POST", // Specify the request method
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -45,14 +45,21 @@ const Register = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Message:", data);
-
+        console.log("Response Data:", data); // Log the full response to check if data.user exists
         if (data.user) {
           // Store user in context after successful registration
           setUser(data.user);
 
+          // Store user in localstorage for persisting on reloads
+          localStorage.setItem("user", JSON.stringify(data.user));
+          
+          // Logging the user data for verification 
+          // console.log("User Data:", data.user);
+
           // Redirect to home page or any page after successful registration
           nav("/home");
+        } else {
+          console.error("User data is missing in the response");
         }
       })
       .catch((error) => {

@@ -19,8 +19,18 @@ export async function registerUser(req, res) {
     body.password = bcrypt.hashSync(body.password, salt);
 
     // Create the user in the database
-    await userModel.create(body);
-    res.status(201).send({ message: "User created successfully" });
+    const newUser = await userModel.create(body);
+
+    // Return the newly created user data
+    res.status(201).send({
+      message: "User created successfully",
+      user: {
+        _id: newUser._id,
+        username: newUser.username,
+        name: newUser.name,
+        email: newUser.email,
+      },
+    });
   } catch (err) {
     res.status(400).send({ message: "Error: " + err.message });
   }

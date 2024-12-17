@@ -1,16 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { UserProvider } from "./userContext";
 
-// importing the dynamic game loader
-import GameLoader from "./Components/Gameloader.jsx";
-
-// importing the context provider
-import { UserProvider } from "./userContext.jsx";
-
-// Import other components
-import Register from "./Pages/Register.jsx";
-import Login from "./Pages/Login.jsx";
-import Home from "./Pages/Home.jsx";
-import Robot from "./Models/Robot.jsx";
+import Home from "./Pages/Home";
+import Register from "./Pages/Register";
+import Login from "./Pages/Login";
+import GameLoader from "./Components/Gameloader";
 
 function App() {
   return (
@@ -19,14 +13,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
-
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-
-          {/* Dynamic game route */}
-          <Route path="/game/:id" element={<GameLoader />} />
-
-          <Route path="/test" element={<Robot />} />
+          <Route path="/game/:id" element={<GameLoader />} />;
         </Routes>
       </Router>
     </UserProvider>

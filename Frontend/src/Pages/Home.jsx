@@ -1,28 +1,29 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../userContext";
 import Navbar from "../Components/Navbar";
 import Gamegrid from "../Components/Gamegrid";
-import { UserContext } from "../userContext";
-
 import styles from "../Styles/Home.module.css";
 
 const Home = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    // Only fetch if user is available
-    if (user && user._id) {
+    if (user) {
       fetch(`http://localhost:8000/users/${user._id}`)
         .then((response) => response.json())
-        .then((data) => {
-          console.log(data); // Handle user data here
+        .then(() => {
+          console.log("User data fetched");
+          // console.log("User data fetched:", data);
         })
         .catch((error) => {
           console.error("Error:", error);
         });
-    } else {
-      console.log("User not logged in");
     }
   }, [user]);
+
+  if (!user) {
+    return <div>Please log in</div>;
+  }
 
   return (
     <section className={styles.container}>

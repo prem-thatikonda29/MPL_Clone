@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../userContext.jsx";
+import { UserContext } from "../userContext";
 import styles from "../Styles/Auth.module.css";
 import LeftContainer from "../Components/LeftContainer.jsx";
 
