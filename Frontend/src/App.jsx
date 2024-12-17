@@ -1,7 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import FlappyBird from "./Games/FlappyBird.jsx";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 
-// import Layout from "./HOC/Layout.jsx";
+// importing the dynamic game loader
+import GameLoader from "./GameLoader.jsx";
+
+// Import other components
 import Register from "./Pages/Register.jsx";
 import Login from "./Pages/Login.jsx";
 import Home from "./Pages/Home.jsx";
@@ -15,12 +21,12 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
 
-          {/* <Route element={<Layout />}> */}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          {/* </Route> */}
 
-          <Route path="/game/:id" element={<FlappyBird />} />
+          {/* Dynamic game route */}
+          <Route path="/game/:id" element={<GameLoader />} />
+
           <Route path="/test" element={<Robot />} />
         </Routes>
       </Router>

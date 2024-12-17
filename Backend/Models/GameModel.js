@@ -8,6 +8,7 @@ const gameSchema = new mongoose.Schema(
     //   default: new mongoose.Types.ObjectId(),
     // },
     name: { type: String, required: true },
+    component: { type: String, required: true },
     description: { type: String, required: true },
     photo: { type: String, required: true },
   },

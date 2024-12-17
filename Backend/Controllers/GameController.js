@@ -27,12 +27,17 @@ export async function getGames(req, res) {
 
 export async function getGameById(req, res) {
   try {
-    const game = await GameModel.findById(req.params.gameId);
+    const { gameId } = req.params;
+    const game = await GameModel.findById(gameId);
+
     if (!game) {
       return res.status(404).send({ message: "Game not found" });
     }
+
     res.status(200).send(game);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res
+      .status(500)
+      .send({ message: "Error fetching game", error: error.message });
   }
 }

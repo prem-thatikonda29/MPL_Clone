@@ -17,7 +17,6 @@ function FlappyBird() {
   const [pipePassed, setPipePassed] = useState(false); // To track if bird has crossed pipe
   const [username, setUsername] = useState("");
 
-  // const userID = localStorage.getItem("user");
   // fetch leaderboard
   useEffect(() => {
     fetch("http://localhost:8000/leaderboards/675bebfc39d9ec117ca4b4cb", {

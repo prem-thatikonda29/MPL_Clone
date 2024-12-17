@@ -10,7 +10,7 @@ const Gamegrid = () => {
       .then((response) => response.json())
       .then((data) => {
         setGames(data);
-        console.log(data);
+        // console.log(data);
       })
       .catch((err) => console.log(err));
   }, [games]);
