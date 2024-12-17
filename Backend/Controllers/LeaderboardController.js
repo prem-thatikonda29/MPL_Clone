@@ -2,28 +2,101 @@ import leaderboardModel from "../Models/LeaderboardModel.js";
 import mongoose from "mongoose";
 import gameModel from "../Models/GameModel.js";
 
-export async function getLeaderboard(req, res) {
+// Function to initialize the leaderboard for a game
+export async function initializeLeaderboard(req, res) {
   try {
-    const leaderboard = await leaderboardModel
-      .findOne({ gameId: req.params.gameId })
-      .select("leaderboard") // Select only the leaderboard field
-      .populate("gameId", "name description"); // Optional: Populate gameId with name and description if you want
+    const { gameId } = req.body;
 
-    if (!leaderboard) {
-      res.status(404).send({ message: "Leaderboard not found" });
-      return;
+    // Validate input
+    if (!gameId) {
+      return res.status(400).send({ message: "Invalid gameId" });
     }
 
-    const sortedLeaderboard = leaderboard.leaderboard.sort(
-      (a, b) => b.highscore - a.highscore
-    );
-    res.send(sortedLeaderboard); // Return only the `leaderboard` field
+    // Check if the leaderboard already exists for the game
+    const existingLeaderboard = await leaderboardModel.findOne({ gameId });
+    if (existingLeaderboard) {
+      return res
+        .status(400)
+        .send({ message: "Leaderboard already exists for this game" });
+    }
+
+    // Check if the game exists
+    const game = await gameModel.findById(gameId);
+    if (!game) {
+      return res.status(404).send({ message: "Game not found" });
+    }
+
+    // Create the leaderboard
+    const leaderboard = new leaderboardModel({
+      gameId,
+      game: game.name,
+      leaderboard: [], // Initialize the leaderboard as empty
+    });
+
+    // Save the leaderboard
+    await leaderboard.save();
+
+    res
+      .status(200)
+      .send({ message: "Leaderboard created successfully", leaderboard });
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    console.error("Error:", error);
+    res.status(500).send({ message: "Error: " + error.message });
   }
 }
 
-export async function getUserScore(req, res) {
+// endpoint to fetch the leaderboard for a game
+export const getLeaderboard = async (req, res) => {
+  try {
+    const { gameId } = req.params;
+
+    const leaderboard = await leaderboardModel
+      .findOne({ gameId })
+      .sort({ "leaderboard.highscore": -1 });
+
+    if (!leaderboard) {
+      return res
+        .status(404)
+        .json({ message: "Leaderboard not found for this game" });
+    }
+
+    return res.status(200).json({ leaderboard: leaderboard.leaderboard });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error fetching leaderboard" });
+  }
+};
+
+// endpoint to fetch a user's score for a game
+export const getUserScore = async (req, res) => {
+  try {
+    const { gameId, userId } = req.params;
+
+    const leaderboard = await leaderboardModel.findOne({ gameId });
+
+    if (!leaderboard) {
+      return res
+        .status(404)
+        .json({ message: "Leaderboard not found for this game" });
+    }
+
+    const userEntry = leaderboard.leaderboard.find(
+      (entry) => entry.userId.toString() === userId.toString()
+    );
+
+    if (!userEntry) {
+      return res.status(404).json({ message: "User not found in leaderboard" });
+    }
+
+    return res.status(200).json({ score: userEntry.highscore });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error fetching user's score" });
+  }
+};
+
+// Function to check if the user exists in the leaderboard
+export async function checkUserLeaderboard(req, res) {
   try {
     const { gameId, userId } = req.params;
 
@@ -50,77 +123,81 @@ export async function getUserScore(req, res) {
     );
 
     if (!userEntry) {
-      return res.status(404).send({ message: "User score not found" });
+      // If user doesn't exist, return default highscore of 0
+      return res.send({ username: "User not found", highscore: 0 });
     }
 
+    // Return the user's score if they exist
     res.send({ username: userEntry.username, score: userEntry.highscore });
   } catch (error) {
-    // console.error("Error:", error);
+    console.error("Error:", error);
     res.status(500).send({ message: error.message });
   }
 }
 
-export async function addToLeaderboard(req, res) {
+// Function to add a new highscore to the leaderboard
+export const addToLeaderboard = async (req, res) => {
   try {
-    const { gameId, userId, highscore, username } = req.body;
+    const { gameId, userId, username, highscore } = req.body;
 
-    if (!gameId || !userId || !username || highscore === undefined) {
-      return res.status(400).send({ message: "Invalid input data" });
-    }
+    // Find the leaderboard for the game
+    const leaderboard = await leaderboardModel.findOne({ gameId });
 
-    // Check if the gameId exists in the games collection
-    const game = await gameModel.findById(gameId);
-    if (!game) {
-      return res.status(404).send({ message: "Game not found" });
-    }
-
-    // Find the leaderboard for the specified gameId
-    let leaderboard = await leaderboardModel.findOne({ gameId });
-
-    // If leaderboard does not exist for the game, create a new leaderboard document
     if (!leaderboard) {
-      leaderboard = new leaderboardModel({
-        gameId: gameId,
-        game: game.name, // Optionally populate the game details like name
-        leaderboard: [], // Initialize the leaderboard array
+      // If no leaderboard exists for the game, create a new one
+      const newLeaderboard = new leaderboardModel({
+        gameId,
+        game: "Flappy Bird", // Or dynamically pass the game name
+        leaderboard: [
+          {
+            username,
+            userId,
+            highscore,
+          },
+        ],
       });
+
+      await newLeaderboard.save();
+      return res
+        .status(200)
+        .json({ message: "Leaderboard created", leaderboard: newLeaderboard });
     }
 
-    // Check if the user already exists in the leaderboard
-    const existingPlayer = leaderboard.leaderboard.find(
-      (entry) => entry.userId.toString() === userId
+    // If the leaderboard exists, check if the user is already in the leaderboard
+    const existingUserIndex = leaderboard.leaderboard.findIndex(
+      (entry) => entry.userId.toString() === userId.toString()
     );
 
-    if (existingPlayer) {
-      // If player already exists, update the highscore if the new score is higher
-      if (existingPlayer.highscore < highscore) {
-        existingPlayer.highscore = highscore;
-      }
-    } else {
-      // If player doesn't exist, add a new entry
-      leaderboard.leaderboard.push({
-        username: username,
-        userId: userId,
-        highscore: highscore,
-      });
+    if (existingUserIndex !== -1) {
+      // If the user already exists in the leaderboard, update their highscore
+      leaderboard.leaderboard[existingUserIndex].highscore = Math.max(
+        leaderboard.leaderboard[existingUserIndex].highscore,
+        highscore
+      );
+      await leaderboard.save();
+      return res
+        .status(200)
+        .json({ message: "Leaderboard updated", leaderboard });
     }
 
-    // Sort the leaderboard by highscore in descending order
-    leaderboard.leaderboard.sort((a, b) => b.highscore - a.highscore);
-
-    // Save the updated leaderboard
-    await leaderboard.save();
-
-    // Return a success response with the updated leaderboard
-    res.status(200).send({
-      message: "Leaderboard updated successfully",
-      leaderboard: leaderboard.leaderboard,
+    // If the user doesn't exist, add them to the leaderboard
+    leaderboard.leaderboard.push({
+      username,
+      userId,
+      highscore,
     });
-  } catch (error) {
-    res.status(500).send({ message: "Error: " + error.message });
-  }
-}
 
+    await leaderboard.save();
+    return res
+      .status(200)
+      .json({ message: "Leaderboard updated", leaderboard });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error updating leaderboard" });
+  }
+};
+
+// Function to update the highscore for a user in the leaderboard
 export async function updateHighscore(req, res) {
   try {
     const { gameId, userId, highscore } = req.body;

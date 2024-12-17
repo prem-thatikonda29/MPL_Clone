@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../userContext";
 import styles from "./FlappyBird.module.css";
 
 function FlappyBird() {
@@ -14,33 +15,46 @@ function FlappyBird() {
   const gameWidth = 400;
   const pipeWidth = 50;
   const birdSize = 40;
-  const [pipePassed, setPipePassed] = useState(false); // To track if bird has crossed pipe
+  const [pipePassed, setPipePassed] = useState(false);
   const [username, setUsername] = useState("");
+  const { user } = useContext(UserContext);
 
-  // fetch leaderboard
+  const gameId = "675bebfc39d9ec117ca4b4cb";
+
+  // Fetch leaderboard and username
   useEffect(() => {
-    fetch("http://localhost:8000/leaderboards/675bebfc39d9ec117ca4b4cb", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch leaderboard");
-        }
-        return response.json();
+    if (user) {
+      // Fetch leaderboard for the current game
+      fetch(`http://localhost:8000/leaderboards/${gameId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       })
-      .then((data) => {
-        console.log(data);
-        setUsername(data[0]["username"]);
-        setHighScore(data[0]["highscore"]);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+        .then((response) => response.json())
+        .then((data) => {
+          // Handle the fetched leaderboard data
+          console.log(data);
+
+          // Find the user entry in the leaderboard
+          const userEntry = data.leaderboard.find(
+            (entry) => entry.userId.toString() === user._id.toString()
+          );
+
+          if (userEntry) {
+            setUsername(userEntry.username); // Set the username
+            setHighScore(userEntry.highscore); // Set the highscore
+          } else {
+            setUsername(user.username); // If not in leaderboard, use user's current username
+            setHighScore(0); // Default score if user not found
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }, [user]);
 
   useEffect(() => {
     let gravity;
@@ -106,40 +120,37 @@ function FlappyBird() {
     return () => window.removeEventListener("keydown", handleSpacebar);
   }, [isGameOver]);
 
-  const endGame = () => {
-    setIsGameOver(true);
-    setHighScore((prevHighScore) => {
-      const newHighScore = Math.max(score, prevHighScore);
-      localStorage.setItem("highScore", newHighScore);
-
-      fetch("http://localhost:8000/leaderboards/add", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-        body: JSON.stringify({
-          gameId: "675bebfc39d9ec117ca4b4cb",
-          userId: localStorage.getItem("user"),
-          username: username,
-          highscore: newHighScore,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((error) => console.error("Error:", error));
-
-      return newHighScore;
-    });
+  const resetGame = () => {
+    setIsGameOver(false);
+    setBirdPosition(300); // Reset bird position
+    setScore(0); // Reset score
+    setPipeLeft(500); // Reset pipe position
+    setPipeHeight(200); // Reset pipe height
+    setPipePassed(false); // Reset pipe pass status
   };
 
-  const resetGame = () => {
-    setBirdPosition(300);
-    setPipeHeight(200);
-    setPipeLeft(500);
-    setScore(0);
-    setIsGameOver(false);
-    setPipePassed(false); // Reset the flag when restarting the game
+  const endGame = () => {
+    setIsGameOver(true);
+    const newHighScore = Math.max(score, highScore);
+    setHighScore(newHighScore);
+
+    // Update or add the new score in the leaderboard
+    fetch("http://localhost:8000/leaderboards/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        gameId: "675bebfc39d9ec117ca4b4cb", // Your gameId
+        userId: user._id,
+        username: user.username,
+        highscore: newHighScore,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log("Leaderboard updated:", data))
+      .catch((error) => console.error("Error updating leaderboard:", error));
   };
 
   return (

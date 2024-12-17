@@ -16,6 +16,7 @@ const leaderboardSchema = new mongoose.Schema(
           required: true,
           ref: "users",
         },
+
         highscore: { type: Number, required: true, default: 0 },
       },
     ],
