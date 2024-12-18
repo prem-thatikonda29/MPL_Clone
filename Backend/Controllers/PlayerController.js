@@ -1,4 +1,4 @@
-import PlayerModel from "../Models/PlayerModel";
+import PlayerModel from "../Models/PlayerModel.js";
 
 // Function to create a new player
 export async function createPlayer(req, res) {
