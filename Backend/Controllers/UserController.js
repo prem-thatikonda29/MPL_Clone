@@ -65,7 +65,7 @@ export async function updateUserDetails(req, res) {
     await user.save();
     return res
       .status(200)
-      .send({ message: "User details updated successfully" });
+      .send({ statuscode: 200, message: "User details updated successfully" });
   } catch (error) {
     console.error("Error updating user:", error);
     return res

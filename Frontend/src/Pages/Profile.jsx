@@ -1,20 +1,33 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import styles from "../Styles/Profile.module.css";
 import { UserContext } from "../userContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 
 const Profile = () => {
-  const { user, setUser } = useContext(UserContext); // Get current user
+  const { user, setUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
-    name: user?.name || "",
-    username: user?.username || "",
-    walletBalance: user?.walletBalance || 0,
+    name: "",
+    username: "",
+    walletBalance: 0,
   });
+
   const [isEditable, setIsEditable] = useState({
     name: false,
-    username: false,
-    walletBalance: false,
   });
+
+  // Sync formData with user data
+  useEffect(() => {
+    if (user) {
+      console.log(user);
+      setFormData({
+        name: user.name || "",
+        username: user.username || "",
+        walletBalance: user.balance || 0,
+      });
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,6 +37,10 @@ const Profile = () => {
   };
 
   const toggleEdit = (field) => {
+    if (isEditable[field]) {
+      // If already editable, save the data
+      handleSave();
+    }
     setIsEditable((prev) => ({
       ...prev,
       [field]: !prev[field],
@@ -31,8 +48,13 @@ const Profile = () => {
   };
 
   const handleSave = () => {
-    // Send data to the backend to update user details
-    fetch("http://localhost:8000/user/update", {
+    // Ensure formData includes username and fields to update
+    if (!formData.username) {
+      alert("Username is required");
+      return;
+    }
+
+    fetch("http://localhost:8000/users/updateUserDetails", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -42,8 +64,12 @@ const Profile = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
-          setUser(data.user); // Update context
+        if (data.statuscode === 200) {
+          // If the update is successful, update the context with the new name
+          setUser((prevUser) => ({
+            ...prevUser, // Ensure you're keeping all the other properties of the user
+            name: formData.name, // Update only the name property
+          }));
           alert("Profile updated successfully!");
         } else {
           alert("Error updating profile: " + data.message);
@@ -51,6 +77,10 @@ const Profile = () => {
       })
       .catch((err) => console.error("Error:", err));
   };
+
+  if (!user) {
+    return <div>Loading...</div>; // Add a loading spinner here
+  }
 
   return (
     <section className={styles.container}>
@@ -63,6 +93,7 @@ const Profile = () => {
             <div className={styles.profileAlt}></div>
             <div className={styles.profileAlt}></div>
             <div className={styles.profileAlt}></div>
+            <div className={styles.profileAlt}></div>
           </div>
         </div>
 
@@ -70,63 +101,60 @@ const Profile = () => {
         <div className={styles.profileDetailsBox}>
           <div className={styles.detail}>
             <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={styles.inputField}
-              disabled={!isEditable.name}
-            />
-            <button
-              className={styles.editButton}
-              onClick={() => toggleEdit("name")}
-            >
-              {isEditable.name ? "Cancel" : "Edit"}
-            </button>
+            <div className={styles.inputWrapper}>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className={styles.inputField}
+                disabled={!isEditable.name}
+              />
+              <span
+                className={styles.editIcon}
+                onClick={() => toggleEdit("name")}
+              >
+                <FontAwesomeIcon
+                  icon={isEditable.name ? faFloppyDisk : faPen}
+                  className={styles.icon}
+                />
+              </span>
+            </div>
           </div>
 
+          {/* Username is not editable */}
           <div className={styles.detail}>
             <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              className={styles.inputField}
-              disabled={!isEditable.username}
-            />
-            <button
-              className={styles.editButton}
-              onClick={() => toggleEdit("username")}
-            >
-              {isEditable.username ? "Cancel" : "Edit"}
-            </button>
+            <div className={styles.inputWrapper}>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                className={styles.inputField}
+                disabled
+              />
+            </div>
           </div>
 
           <div className={styles.detail}>
             <label htmlFor="walletBalance">Wallet Balance:</label>
-            <input
-              type="number"
-              id="walletBalance"
-              name="walletBalance"
-              value={formData.walletBalance}
-              onChange={handleChange}
-              className={styles.inputField}
-              disabled={!isEditable.walletBalance}
-            />
-            <button
-              className={styles.editButton}
-              onClick={() => toggleEdit("walletBalance")}
-            >
-              {isEditable.walletBalance ? "Cancel" : "Edit"}
-            </button>
+            <div className={styles.inputWrapper}>
+              <input
+                type="number"
+                id="walletBalance"
+                name="walletBalance"
+                value={formData.walletBalance}
+                className={styles.inputField}
+                disabled
+              />
+            </div>
           </div>
 
           <button className={styles.saveButton} onClick={handleSave}>
-            Save Changes
+            Save All Changes
           </button>
         </div>
       </div>
