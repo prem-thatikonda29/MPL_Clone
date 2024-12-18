@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faBars } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHouse,
+  faWallet,
+  faUserAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import styles from "../Styles/Navbar.module.css";
 
 const Navbar = () => {
@@ -14,8 +18,13 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link to={"/flappybird"}>
-              <FontAwesomeIcon icon={faBars} className={styles.icon} />
+            <Link to={"/wallet"}>
+              <FontAwesomeIcon icon={faWallet} className={styles.icon} />
+            </Link>
+          </li>
+          <li>
+            <Link to={"/profile"}>
+              <FontAwesomeIcon icon={faUserAlt} className={styles.icon} />
             </Link>
           </li>
         </ul>
