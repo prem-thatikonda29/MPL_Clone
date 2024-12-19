@@ -42,3 +42,18 @@ export async function getContests(req, res) {
     res.status(500).send({ message: "Internal Server Error" });
   }
 }
+
+// function to get all contests of a given sport
+export async function getBySport(req, res) {
+  try {
+    const { sport } = req.params;
+    const contests = await ContestModel.find({ contestSport: sport });
+
+    if (!contests) {
+      return res.status(404).send({ message: "No contests found" });
+    }
+    res.status(200).send({ message: "Contests retrieved", contests });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+}
