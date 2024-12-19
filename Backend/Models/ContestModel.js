@@ -34,10 +34,14 @@ const ContestSchema = new mongoose.Schema(
     },
     teams: [
       {
-        teamId: mongoose.Schema.Types.ObjectId,
-        teamNames: String,
-        ref: "teams",
-        default: null,
+        teamId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "teams",
+          default: null,
+        },
+        teamName: {
+          type: String,
+        },
       },
     ],
   },

@@ -7,6 +7,7 @@ import gameRouter from "./Routes/GameRouter.js";
 import leaderboardRouter from "./Routes/LeaderboardRouter.js";
 import playerRouter from "./Routes/PlayerRouter.js";
 import teamRouter from "./Routes/TeamRouter.js";
+import ContestRouter from "./Routes/ContestRouter.js";
 import dbConnector from "./dbConnection.js";
 
 import verifyToken from "./middlewares/authMiddleware.js";
@@ -29,6 +30,8 @@ app.use("/leaderboards", leaderboardRouter);
 app.use("/players", playerRouter);
 
 app.use("/teams", teamRouter);
+
+app.use("/contests", ContestRouter);
 
 app.use(verifyToken);
 
