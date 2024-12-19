@@ -28,3 +28,17 @@ export async function getContest(req, res) {
     res.status(500).send({ message: "Internal Server Error" });
   }
 }
+
+// function to get all contests
+export async function getContests(req, res) {
+  try {
+    const contests = await ContestModel.find();
+    if (!contests) {
+      return res.status(404).send({ message: "No contests found" });
+    }
+
+    res.status(200).send({ message: "Contests retrieved", contests });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+}
