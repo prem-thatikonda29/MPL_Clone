@@ -49,7 +49,7 @@ export async function getBySport(req, res) {
     const { sport } = req.params;
     const contests = await ContestModel.find({ contestSport: sport });
 
-    if (!contests) {
+    if (!contests || contests.length === 0) {
       return res.status(404).send({ message: "No contests found" });
     }
     res.status(200).send({ message: "Contests retrieved", contests });

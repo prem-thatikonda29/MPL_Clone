@@ -16,11 +16,11 @@ const TeamSchema = new mongoose.Schema(
     },
     players: [
       {
-        playerId: mongoose.Schema.Types.ObjectId,
-        type: String,
-        required: true,
-        ref: "players",
-        default: [],
+        playerId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "players",
+          default: null,
+        },
       },
     ],
   },
