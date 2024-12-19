@@ -18,7 +18,7 @@ export async function createContest(req, res) {
 export async function getContest(req, res) {
   try {
     const { contestId } = req.params;
-    const contest = await ContestModel.findById({ contestId });
+    const contest = await ContestModel.findById(contestId);
     if (!contest) {
       return res.status(404).send({ message: "Contest not found" });
     }
