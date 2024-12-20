@@ -8,7 +8,9 @@ function TeamSelection() {
   const params = useParams();
   const [contest, setContest] = useState({});
   const [teams, setTeams] = useState([]);
+  const [selectedPlayers, setSelectedPlayers] = useState([]); // State to hold selected players
 
+  // Fetch Contest and Teams Data
   useEffect(() => {
     fetch(`http://localhost:8000/contests/${params.contestId}`)
       .then((res) => {
@@ -21,13 +23,15 @@ function TeamSelection() {
         if (data.contest) {
           setContest(data.contest);
           setTeams(data.contest.teams || []);
-          console.log("Contest data:", data.contest);
-        } else {
-          console.error("No contest data found in response");
         }
       })
       .catch((err) => console.error("Fetch contest error:", err));
   }, [params.contestId]);
+
+  // Function to handle selection of players
+  const handleSelectPlayer = (updatedSelectedPlayers) => {
+    setSelectedPlayers(updatedSelectedPlayers);
+  };
 
   return (
     <section className={styles.layout}>
@@ -45,10 +49,27 @@ function TeamSelection() {
           )}
         </div>
         <div className={styles.content}>
-          <TeamDetails contest={contest} teams={teams} />
+          <TeamDetails
+            contest={contest}
+            teams={teams}
+            selectedPlayers={selectedPlayers} // Pass selected players to TeamDetails
+            handleSelectPlayer={handleSelectPlayer} // Pass function to update selected players
+          />
         </div>
       </div>
-      <div className={styles.sidebar}></div>
+      <div className={styles.sidebar}>
+        <h3>Selected Players:</h3>
+        {selectedPlayers.length > 0 ? (
+          selectedPlayers.map((player) => (
+            <div key={player.player._id}>
+              <p>{player.player.playerName}</p>
+              <p>Price: {player.player.playerPrice}</p>
+            </div>
+          ))
+        ) : (
+          <p>No players selected.</p>
+        )}
+      </div>
     </section>
   );
 }

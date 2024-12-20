@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import styles from "../Styles/TeamDetails.module.css";
 import PlayerDetails from "./PlayerDetails";
 
-function TeamDetails({ contest, teams }) {
+function TeamDetails({ contest, teams, selectedPlayers, handleSelectPlayer }) {
   const [selectedTeamData, setSelectedTeamData] = useState(null);
   const [players, setPlayers] = useState([]);
-  const [filterType, setFilterType] = useState("All");
 
   // Fetch Team Data
   useEffect(() => {
@@ -41,7 +40,7 @@ function TeamDetails({ contest, teams }) {
         })
         .catch((err) => console.error("Fetch team error:", err));
     }
-  }, [contest]);
+  }, [teams]);
 
   useEffect(() => {
     if (selectedTeamData) {
@@ -52,58 +51,16 @@ function TeamDetails({ contest, teams }) {
     }
   }, [selectedTeamData]);
 
-  useEffect(() => {
-    console.log("Selected", selectedTeamData);
-  }, [selectedTeamData]);
-
-  // Filtered Players based on `filterType`
-  const filteredPlayers =
-    filterType === "All"
-      ? players
-      : players.filter((player) => player.playerType === filterType);
-
   return (
     <div className={styles.container}>
       {selectedTeamData ? (
-        <>
-          {/* Filter Buttons */}
-          <div className={styles.filterButtons}>
-            <button
-              className={styles.filterButton}
-              onClick={() => setFilterType("All")}
-            >
-              All
-            </button>
-            <button
-              className={styles.filterButton}
-              onClick={() => setFilterType("Striker")}
-            >
-              Striker
-            </button>
-            <button
-              className={styles.filterButton}
-              onClick={() => setFilterType("Midfielder")}
-            >
-              Midfielder
-            </button>
-            <button
-              className={styles.filterButton}
-              onClick={() => setFilterType("Defender")}
-            >
-              Defender
-            </button>
-            <button
-              className={styles.filterButton}
-              onClick={() => setFilterType("Goalkeeper")}
-            >
-              Goalkeeper
-            </button>
-          </div>
-
-          <div className={styles.teamInfo}>
-            <PlayerDetails playerIds={players.length > 0 ? players : []} />
-          </div>
-        </>
+        <div className={styles.teamInfo}>
+          <PlayerDetails
+            playerIds={players}
+            selectedPlayers={selectedPlayers} // Pass selectedPlayers to PlayerDetails
+            handleSelectPlayer={handleSelectPlayer} // Pass handleSelectPlayer to PlayerDetails
+          />
+        </div>
       ) : (
         <p>Loading team data...</p>
       )}
