@@ -8,6 +8,7 @@ import GameLoader from "./Components/Gameloader";
 import Wallet from "./Pages/Wallet";
 import Profile from "./Pages/Profile";
 import TeamSelection from "./Pages/TeamSelection";
+import Contests from "./Pages/Contests";
 
 function App() {
   return (
@@ -21,8 +22,9 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/game/:id" element={<GameLoader />} />;
           <Route path="/wallet" element={<Wallet />} />;
-          <Route path="/team" element={<TeamSelection />} />;
-          <Route path="/team/:contestId" element={<TeamSelection />} />;
+          {/* <Route path="/team" element={<TeamSelection />} />; */}
+          <Route path="/contests" element={<Contests />} />;
+          <Route path="/contests/:contestId" element={<TeamSelection />} />;
         </Routes>
       </Router>
     </UserProvider>

@@ -4,6 +4,7 @@ import {
   faHouse,
   faWallet,
   faUserAlt,
+  faFutbol,
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "../Styles/Navbar.module.css";
 
@@ -25,6 +26,11 @@ const Navbar = () => {
           <li>
             <Link to={"/profile"}>
               <FontAwesomeIcon icon={faUserAlt} className={styles.icon} />
+            </Link>
+          </li>
+          <li>
+            <Link to={"/contests"}>
+              <FontAwesomeIcon icon={faFutbol} className={styles.icon} />
             </Link>
           </li>
         </ul>
