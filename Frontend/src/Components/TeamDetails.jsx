@@ -5,14 +5,13 @@ import PlayerDetails from "./PlayerDetails";
 function TeamDetails({ contest, teams }) {
   const [selectedTeamData, setSelectedTeamData] = useState(null);
   const [players, setPlayers] = useState([]);
+  const [filterType, setFilterType] = useState("All");
 
   // Fetch Team Data
   useEffect(() => {
     if (teams && teams.length > 0) {
       const teamId1 = teams[0].teamId;
       const teamId2 = teams[1].teamId;
-      console.log("1st Team ID for fetch:", teamId1);
-      console.log("2nd Team ID for fetch:", teamId2);
 
       fetch(`http://localhost:8000/teams/${teamId1}`)
         .then((res) => {
@@ -22,11 +21,8 @@ function TeamDetails({ contest, teams }) {
           return res.json();
         })
         .then((data) => {
-          console.log("Fetched Team 1 data:", data);
           if (data) {
             setSelectedTeamData((prev) => ({ ...prev, team1: data }));
-          } else {
-            console.error("Fetched data is null or undefined");
           }
         })
         .catch((err) => console.error("Fetch team error:", err));
@@ -39,20 +35,13 @@ function TeamDetails({ contest, teams }) {
           return res.json();
         })
         .then((data) => {
-          console.log("Fetched Team 2 data:", data);
           if (data) {
             setSelectedTeamData((prev) => ({ ...prev, team2: data }));
-          } else {
-            console.error("Fetched data is null or undefined");
           }
         })
         .catch((err) => console.error("Fetch team error:", err));
     }
   }, [contest]);
-
-  useEffect(() => {
-    console.log("Updated Selected Team Data:", selectedTeamData);
-  }, [selectedTeamData]);
 
   useEffect(() => {
     if (selectedTeamData) {
@@ -63,12 +52,58 @@ function TeamDetails({ contest, teams }) {
     }
   }, [selectedTeamData]);
 
+  useEffect(() => {
+    console.log("Selected", selectedTeamData);
+  }, [selectedTeamData]);
+
+  // Filtered Players based on `filterType`
+  const filteredPlayers =
+    filterType === "All"
+      ? players
+      : players.filter((player) => player.playerType === filterType);
+
   return (
     <div className={styles.container}>
       {selectedTeamData ? (
-        <div className={styles.teamInfo}>
-          <PlayerDetails playerIds={players.length > 0 ? players : []} />
-        </div>
+        <>
+          {/* Filter Buttons */}
+          <div className={styles.filterButtons}>
+            <button
+              className={styles.filterButton}
+              onClick={() => setFilterType("All")}
+            >
+              All
+            </button>
+            <button
+              className={styles.filterButton}
+              onClick={() => setFilterType("Striker")}
+            >
+              Striker
+            </button>
+            <button
+              className={styles.filterButton}
+              onClick={() => setFilterType("Midfielder")}
+            >
+              Midfielder
+            </button>
+            <button
+              className={styles.filterButton}
+              onClick={() => setFilterType("Defender")}
+            >
+              Defender
+            </button>
+            <button
+              className={styles.filterButton}
+              onClick={() => setFilterType("Goalkeeper")}
+            >
+              Goalkeeper
+            </button>
+          </div>
+
+          <div className={styles.teamInfo}>
+            <PlayerDetails playerIds={players.length > 0 ? players : []} />
+          </div>
+        </>
       ) : (
         <p>Loading team data...</p>
       )}

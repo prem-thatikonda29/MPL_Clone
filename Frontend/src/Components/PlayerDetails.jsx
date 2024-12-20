@@ -19,7 +19,7 @@ function PlayerDetails({ playerIds }) {
             return res.json();
           })
           .then((data) => {
-            console.log("Player data fetched:", data);
+            // console.log("Player data fetched:", data);
             if (data) {
               return data;
             } else {
@@ -43,12 +43,12 @@ function PlayerDetails({ playerIds }) {
           const validPlayers = players.filter((player) => player !== null);
 
           // Check valid players
-          console.log("Valid players:", validPlayers);
+          // console.log("Valid players:", validPlayers);
 
           // sorting the players based on their price
-          validPlayers.sort((a, b) => {
-            a.player.playerPrice - b.player.playerPrice;
-          });
+          validPlayers.sort(
+            (a, b) => b.player.playerPrice - a.player.playerPrice
+          );
 
           // Set the valid players to state
           setPlayersData(validPlayers);
@@ -59,9 +59,9 @@ function PlayerDetails({ playerIds }) {
     }
   }, [playerIds]);
 
-  useEffect(() => {
-    console.log("Players Data:", playersData);
-  }, [playersData]);
+  // useEffect(() => {
+  //   console.log("Players Data:", playersData);
+  // }, [playersData]);
 
   return (
     <div className={styles.playersContainer}>
