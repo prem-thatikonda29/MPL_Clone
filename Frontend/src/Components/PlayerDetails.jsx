@@ -43,7 +43,12 @@ function PlayerDetails({ playerIds }) {
           const validPlayers = players.filter((player) => player !== null);
 
           // Check valid players
-          //   console.log("Valid players:", validPlayers);
+          console.log("Valid players:", validPlayers);
+
+          // sorting the players based on their price
+          validPlayers.sort((a, b) => {
+            a.player.playerPrice - b.player.playerPrice;
+          });
 
           // Set the valid players to state
           setPlayersData(validPlayers);
@@ -66,11 +71,12 @@ function PlayerDetails({ playerIds }) {
             <h3>{play.player.playerName}</h3>
             <p>Team: {play.player.playerTeam}</p>
             <p>Type: {play.player.playerType}</p>
+            <p>Price: {play.player.playerPrice}</p>
             {/* <img src={play.player.playerImage} alt={play.playerName} /> */}
           </div>
         ))
       ) : (
-        <p>Loading</p> // If no valid players are found, it will show "Loading"
+        <p>Loading</p>
       )}
     </div>
   );

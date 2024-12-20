@@ -56,9 +56,6 @@ function TeamDetails({ contest, teams }) {
 
   useEffect(() => {
     if (selectedTeamData) {
-      //   console.log("Team 1 Players:", selectedTeamData?.team1?.team.players);
-      //   console.log("Team 2 Players:", selectedTeamData?.team2?.team.players);
-
       setPlayers([
         ...(selectedTeamData?.team1?.team.players || []),
         ...(selectedTeamData?.team2?.team.players || []),
