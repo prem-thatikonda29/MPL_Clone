@@ -19,7 +19,6 @@ const TeamSchema = new mongoose.Schema(
         playerId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "players",
-          default: null,
         },
       },
     ],

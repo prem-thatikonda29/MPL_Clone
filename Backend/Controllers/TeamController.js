@@ -18,15 +18,30 @@ export async function createTeam(req, res) {
 export async function getTeam(req, res) {
   try {
     const { teamId } = req.params;
-    const team = await TeamModel.findOne({
-      _id: teamId,
-    });
+
+    // Find the team and populate player details
+    const rawTeam = await TeamModel.findById(teamId);
+    // console.log("Raw Team Data:", rawTeam);
+
+    const team = await TeamModel.findById(teamId)
+      .populate(
+        "players.playerId",
+        "playerName playerSport playerTeam playerType"
+      )
+      .lean();
+
+    // console.log("Populated Team Data:", team);
+
     if (!team) {
       return res.status(404).send({ message: "Team not found" });
     }
-    return res.status(200).send({ message: "Team found", team });
+
+    return res.status(200).send({
+      message: "Team found",
+      team,
+    });
   } catch (error) {
-    console.log("Error in getTeam", error);
+    console.error("Error in getTeam", error);
     return res.status(500).send({ message: "Internal Server Error" });
   }
 }

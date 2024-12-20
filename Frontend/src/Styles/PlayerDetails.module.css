@@ -1,0 +1,15 @@
+.playersContainer {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+}
+
+.playerInfo {
+  display: flex;
+  background-color: white;
+  border-radius: 12px;
+  width: 100%;
+  height: 100px;
+  gap: 10px;
+  color: black;
+}
