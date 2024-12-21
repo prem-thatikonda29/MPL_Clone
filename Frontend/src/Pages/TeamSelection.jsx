@@ -8,9 +8,8 @@ function TeamSelection() {
   const params = useParams();
   const [contest, setContest] = useState({});
   const [teams, setTeams] = useState([]);
-  const [selectedPlayers, setSelectedPlayers] = useState([]); // State to hold selected players
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
 
-  // Fetch Contest and Teams Data
   useEffect(() => {
     fetch(`http://localhost:8000/contests/${params.contestId}`)
       .then((res) => {
@@ -23,14 +22,19 @@ function TeamSelection() {
         if (data.contest) {
           setContest(data.contest);
           setTeams(data.contest.teams || []);
+          console.log("Contest data:", data.contest);
+        } else {
+          console.error("No contest data found in response");
         }
       })
       .catch((err) => console.error("Fetch contest error:", err));
   }, [params.contestId]);
 
-  // Function to handle selection of players
-  const handleSelectPlayer = (updatedSelectedPlayers) => {
-    setSelectedPlayers(updatedSelectedPlayers);
+  // Filter players by type
+  const getPlayersByType = (type) => {
+    return selectedPlayers.filter(
+      (player) => player.player.playerType === type
+    );
   };
 
   return (
@@ -53,22 +57,39 @@ function TeamSelection() {
             contest={contest}
             teams={teams}
             selectedPlayers={selectedPlayers}
-            handleSelectPlayer={handleSelectPlayer}
+            handleSelectPlayer={setSelectedPlayers}
           />
         </div>
       </div>
       <div className={styles.sidebar}>
-        <h3>Selected Players:</h3>
-        {selectedPlayers.length > 0 ? (
-          selectedPlayers.map((player) => (
-            <div key={player.player._id}>
-              <p>{player.player.playerName}</p>
-              <p>Price: {player.player.playerPrice}</p>
+        <div className={styles.strikers}>
+          {getPlayersByType("Striker").map((player) => (
+            <div key={player.player._id} className={styles.playerBox}>
+              {player.player.playerName}
             </div>
-          ))
-        ) : (
-          <p>No players selected.</p>
-        )}
+          ))}
+        </div>
+        <div className={styles.midfielders}>
+          {getPlayersByType("Midfielder").map((player) => (
+            <div key={player.player._id} className={styles.playerBox}>
+              {player.player.playerName}
+            </div>
+          ))}
+        </div>
+        <div className={styles.defenders}>
+          {getPlayersByType("Defender").map((player) => (
+            <div key={player.player._id} className={styles.playerBox}>
+              {player.player.playerName}
+            </div>
+          ))}
+        </div>
+        <div className={styles.goalkeepers}>
+          {getPlayersByType("Goalkeeper").map((player) => (
+            <div key={player.player._id} className={styles.playerBox}>
+              {player.player.playerName}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
