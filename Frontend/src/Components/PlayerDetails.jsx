@@ -4,6 +4,15 @@ import styles from "../Styles/PlayerDetails.module.css";
 function PlayerDetails({ playerIds, selectedPlayers, handleSelectPlayer }) {
   const [playersData, setPlayersData] = useState([]);
 
+  // Maximum allowed players for each type
+  const maxPlayers = 11;
+  const typeLimits = {
+    Goalkeeper: 1,
+    Striker: 2,
+    Midfielder: 4,
+    Defender: 4,
+  };
+
   useEffect(() => {
     if (playerIds && playerIds.length > 0) {
       const playerFetchPromises = playerIds.map((playerId) =>
@@ -15,9 +24,19 @@ function PlayerDetails({ playerIds, selectedPlayers, handleSelectPlayer }) {
       Promise.all(playerFetchPromises)
         .then((players) => {
           const validPlayers = players.filter((player) => player !== null);
-          validPlayers.sort(
-            (a, b) => b.player.playerPrice - a.player.playerPrice
-          );
+          const playerTypeOrder = [
+            "Striker",
+            "Midfielder",
+            "Defender",
+            "Goalkeeper",
+          ];
+
+          validPlayers.sort((a, b) => {
+            return (
+              playerTypeOrder.indexOf(a.player.playerType) -
+              playerTypeOrder.indexOf(b.player.playerType)
+            );
+          });
           setPlayersData(validPlayers);
         })
         .catch((err) => console.error("Error in fetching players:", err));
@@ -29,49 +48,81 @@ function PlayerDetails({ playerIds, selectedPlayers, handleSelectPlayer }) {
     const isSelected = selectedPlayers.some(
       (p) => p.player._id === player.player._id
     );
-    let updatedPlayers;
+
+    const playerType = player.player.playerType;
 
     if (isSelected) {
-      // If player is selected, remove it from the selection
-      updatedPlayers = selectedPlayers.filter(
+      // Unselect the player
+      const updatedPlayers = selectedPlayers.filter(
         (p) => p.player._id !== player.player._id
       );
+      handleSelectPlayer(updatedPlayers);
     } else {
-      // If player is not selected, add it to the selection
-      updatedPlayers = [...selectedPlayers, player];
-    }
+      // Check if adding the player exceeds any limits
+      const totalSelected = selectedPlayers.length;
+      const typeSelected = selectedPlayers.filter(
+        (p) => p.player.playerType === playerType
+      ).length;
 
-    // Update the selected players in the parent component
-    handleSelectPlayer(updatedPlayers);
+      if (totalSelected < maxPlayers && typeSelected < typeLimits[playerType]) {
+        const updatedPlayers = [...selectedPlayers, player];
+        handleSelectPlayer(updatedPlayers);
+      } else {
+        alert(
+          `Cannot select more players of type ${playerType}. Limit: ${typeLimits[playerType]}`
+        );
+      }
+    }
   };
+
+  // Group players by type
+  const groupedPlayers = playersData.reduce((acc, player) => {
+    const type = player.player.playerType;
+    if (!acc[type]) {
+      acc[type] = [];
+    }
+    acc[type].push(player);
+    return acc;
+  }, {});
 
   return (
     <div className={styles.playersContainer}>
-      {playersData.length > 0 ? (
-        playersData.map((play) => (
-          <div
-            key={play.player._id}
-            className={`${styles.playerInfo} ${
-              selectedPlayers.some((p) => p.player._id === play.player._id)
-                ? styles.selected
-                : ""
-            }`}
-            onClick={() => handlePlayerSelection(play)} // Handle player selection/unselection on click
-          >
-            <h3>{play.player.playerName}</h3>
-            <p>Team: {play.player.playerTeam}</p>
-            <p>Type: {play.player.playerType}</p>
-            <p>Price: {play.player.playerPrice}</p>
-            <p>
-              {selectedPlayers.some((p) => p.player._id === play.player._id)
-                ? "Selected"
-                : "Select"}
-            </p>
-          </div>
-        ))
-      ) : (
-        <p>Loading players...</p>
-      )}
+      {Object.entries(groupedPlayers).map(([type, players]) => (
+        <div key={type} className={styles.playerGroup}>
+          <h2 className={styles.playerTypeHeader}>{type}</h2>
+          {players.map((play) => {
+            const typeSelected = selectedPlayers.filter(
+              (p) => p.player.playerType === play.player.playerType
+            ).length;
+
+            const isDisabled =
+              typeSelected >= typeLimits[play.player.playerType] &&
+              !selectedPlayers.some((p) => p.player._id === play.player._id);
+
+            return (
+              <div
+                key={play.player._id}
+                className={`${styles.playerInfo} ${
+                  selectedPlayers.some((p) => p.player._id === play.player._id)
+                    ? styles.selected
+                    : ""
+                } ${isDisabled ? styles.disabled : ""}`}
+                onClick={!isDisabled ? () => handlePlayerSelection(play) : null}
+              >
+                <h3>{play.player.playerName}</h3>
+                <p>Team: {play.player.playerTeam}</p>
+                <p>Type: {play.player.playerType}</p>
+                <p>Price: {play.player.playerPrice}</p>
+                <p>
+                  {selectedPlayers.some((p) => p.player._id === play.player._id)
+                    ? "Selected"
+                    : "Select"}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }

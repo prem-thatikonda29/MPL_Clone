@@ -52,8 +52,8 @@ function TeamSelection() {
           <TeamDetails
             contest={contest}
             teams={teams}
-            selectedPlayers={selectedPlayers} // Pass selected players to TeamDetails
-            handleSelectPlayer={handleSelectPlayer} // Pass function to update selected players
+            selectedPlayers={selectedPlayers}
+            handleSelectPlayer={handleSelectPlayer}
           />
         </div>
       </div>

@@ -18,3 +18,8 @@
 .filterButton:hover {
   background-color: #0056b3;
 }
+
+.teamInfo {
+  display: flex;
+  flex-flow: column wrap;
+}

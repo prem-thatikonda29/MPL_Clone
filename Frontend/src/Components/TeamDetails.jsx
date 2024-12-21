@@ -57,8 +57,8 @@ function TeamDetails({ contest, teams, selectedPlayers, handleSelectPlayer }) {
         <div className={styles.teamInfo}>
           <PlayerDetails
             playerIds={players}
-            selectedPlayers={selectedPlayers} // Pass selectedPlayers to PlayerDetails
-            handleSelectPlayer={handleSelectPlayer} // Pass handleSelectPlayer to PlayerDetails
+            selectedPlayers={selectedPlayers}
+            handleSelectPlayer={handleSelectPlayer}
           />
         </div>
       ) : (
