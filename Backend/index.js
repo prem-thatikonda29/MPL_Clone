@@ -8,6 +8,7 @@ import leaderboardRouter from "./Routes/LeaderboardRouter.js";
 import playerRouter from "./Routes/PlayerRouter.js";
 import teamRouter from "./Routes/TeamRouter.js";
 import ContestRouter from "./Routes/ContestRouter.js";
+import fantasyTeamRouter from "./Routes/FantasyTeamRouter.js";
 import dbConnector from "./dbConnection.js";
 
 import verifyToken from "./middlewares/authMiddleware.js";
@@ -32,6 +33,8 @@ app.use("/players", playerRouter);
 app.use("/teams", teamRouter);
 
 app.use("/contests", ContestRouter);
+
+app.use("/fantasyTeams", fantasyTeamRouter);
 
 app.use(verifyToken);
 

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import styles from "../Styles/TeamSelection.module.css";
 import { useParams } from "react-router-dom";
+import { UserContext } from "../userContext";
 import TeamDetails from "../Components/TeamDetails";
 
 function TeamSelection() {
@@ -9,6 +10,8 @@ function TeamSelection() {
   const [contest, setContest] = useState({});
   const [teams, setTeams] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const { user } = useContext(UserContext);
+  const isSaveDisabled = selectedPlayers.length !== 11;
 
   useEffect(() => {
     fetch(`http://localhost:8000/contests/${params.contestId}`)
@@ -35,6 +38,47 @@ function TeamSelection() {
     return selectedPlayers.filter(
       (player) => player.player.playerType === type
     );
+  };
+
+  const handleSaveTeam = async () => {
+    if (!user) {
+      console.error("User is not authenticated");
+      return;
+    }
+
+    // Map selectedPlayers to the required format
+    const teamData = selectedPlayers.map((player) => ({
+      playerId: player.player._id, // Assuming player.player._id is the ID of the player
+      playerPoints: 0, // Set initial points to 0 or based on your logic
+    }));
+
+    try {
+      const response = await fetch(
+        "http://localhost:8000/fantasyTeams/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            team: teamData, // Sending team data in the correct format
+            contestId: params.contestId,
+            userId: user._id,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Team saved successfully:", data);
+        // Handle successful save (e.g., redirect to another page)
+        
+      } else {
+        console.error("Failed to save team:", data);
+      }
+    } catch (error) {
+      console.error("Error saving team:", error);
+    }
   };
 
   return (
@@ -90,6 +134,13 @@ function TeamSelection() {
             </div>
           ))}
         </div>
+        <button
+          className={styles.saveButton}
+          onClick={handleSaveTeam}
+          disabled={isSaveDisabled}
+        >
+          Save Team
+        </button>
       </div>
     </section>
   );

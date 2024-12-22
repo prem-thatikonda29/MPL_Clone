@@ -57,6 +57,7 @@ function PlayerDetails({ playerIds, selectedPlayers, handleSelectPlayer }) {
         (p) => p.player._id !== player.player._id
       );
       handleSelectPlayer(updatedPlayers);
+      console.log("Selected Players:", selectedPlayers);
     } else {
       // Check if adding the player exceeds any limits
       const totalSelected = selectedPlayers.length;

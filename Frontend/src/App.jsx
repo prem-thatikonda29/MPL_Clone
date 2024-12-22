@@ -21,8 +21,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/game/:id" element={<GameLoader />} />;
-          <Route path="/wallet" element={<Wallet />} />;
-          {/* <Route path="/team" element={<TeamSelection />} />; */}
+          <Route path="/wallet" element={<Wallet />} />
           <Route path="/contests" element={<Contests />} />;
           <Route path="/contests/:contestId" element={<TeamSelection />} />;
         </Routes>
