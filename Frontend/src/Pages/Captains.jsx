@@ -98,11 +98,20 @@ const Captains = () => {
               key={player._id}
               className={`${styles.captainCard} ${
                 selectedPlayer === player._id ? styles.selected : ""
+              } ${
+                player.playerTeam === "Real Madrid"
+                  ? styles.realMadrid
+                  : player.playerTeam === "Manchester City"
+                  ? styles.city
+                  : ""
               }`}
               onClick={() => handleSelectPlayer(player._id)}
             >
-              <h3>{player.playerName}</h3>
-              <p>{player.playerTeam}</p>
+              <div className={styles.overlay}></div>
+              <div>
+                <h3>{player.playerName}</h3>
+                <p>{player.playerTeam}</p>
+              </div>
               <button
                 disabled={
                   selectedPlayer !== null && selectedPlayer !== player._id

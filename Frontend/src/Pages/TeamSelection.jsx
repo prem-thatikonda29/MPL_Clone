@@ -5,6 +5,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
 import TeamDetails from "../Components/TeamDetails";
 
+// importing team logos
+import RM from "../../public/madrid.png";
+import FCB from "../../public/barca.png";
+import MC from "../../public/city.png";
+
 function TeamSelection() {
   const params = useParams();
   const [contest, setContest] = useState({});
@@ -75,6 +80,7 @@ function TeamSelection() {
       console.log("Fantasy Team ID:", data.fantasyTeam._id);
       if (response.ok) {
         console.log("Team saved successfully:", data.fantasyTeam);
+
         // Handle successful save (e.g., redirect to another page)
         nav(`/chooseCaptain/${data.fantasyTeam._id}`);
       } else {
@@ -92,9 +98,21 @@ function TeamSelection() {
         <div className={styles.header}>
           {teams && teams.length >= 2 ? (
             <>
-              <div className={styles.circle}>{teams[0].teamName}</div>
-              <div className={styles.circle}>VS</div>
-              <div className={styles.circle}>{teams[1].teamName}</div>
+              <div className={styles.logo}>
+                <img src={RM} alt="" className={styles.bigLogo}/>
+              </div>
+              <div className={styles.circle}>
+                <p className={styles.circle__p}>{teams[0].teamName}</p>
+              </div>
+              <div className={styles.circle}>
+                <p style={{ color: "##666", fontSize: "1.4rem" }}>VS</p>
+              </div>
+              <div className={styles.circle}>
+                <p className={styles.circle__p}>{teams[1].teamName}</p>
+              </div>
+              <div className={styles.logo}>
+                <img src={MC} alt="RM" className={styles.smallLogo} />
+              </div>
             </>
           ) : (
             <div className={styles.circle}>Loading teams...</div>

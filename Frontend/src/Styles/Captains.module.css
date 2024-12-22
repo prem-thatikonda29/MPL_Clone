@@ -19,7 +19,8 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   padding: 1rem;
-  width: 180px; /* Reduced width for smaller cards */
+  width: 180px;
+  height: 220px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -28,24 +29,53 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  justify-content: space-between;
+}
+
+.realMadrid {
+  background-image: url("../../public/madrid.png");
+}
+
+.city {
+  background-image: url("../../public/city.png");
 }
 
 .captainCard:hover {
-  background: #333333;
   border-color: #ff3333;
   transform: translateY(-5px);
 }
 
+.captainCard:hover .overlay {
+  background-color: rgba(45, 45, 45, 0.5);
+  z-index: 0;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(45, 45, 45, 0.8);
+  z-index: 1;
+}
+
 .captainCard h3 {
   color: #ffffff;
-  font-size: 1.2rem; /* Reduced font size */
+  font-size: 1.2rem;
+  font-weight: 800;
   margin-bottom: 0.5rem;
+  z-index: 1;
 }
 
 .captainCard p {
   color: #cccccc;
-  font-size: 0.8rem; /* Reduced font size */
+  font-size: 0.8rem;
+  font-weight: 700;
   margin: 0.2rem 0;
+  z-index: 1;
 }
 
 .captainCard button {
@@ -56,6 +86,14 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.3s ease;
+  z-index: 1;
+}
+
+.captainCard h3,
+.captainCard p,
+.captainCard button {
+  z-index: 1;
+  position: relative;
 }
 
 .captainCard button:hover {
