@@ -113,28 +113,50 @@ function TeamSelection() {
         <div className={styles.strikers}>
           {getPlayersByType("Striker").map((player) => (
             <div key={player.player._id} className={styles.playerBox}>
-              {player.player.playerName}
+              <div className={styles.playerImg}>
+                <img src={player.player.playerImage} alt="player" />
+              </div>
+              <p>
+                {player.player.playerName.split(" ")[0]
+                  ? player.player.playerName.split(" ")[0]
+                  : player.player.playerName.split(" ")[1]}
+              </p>
             </div>
           ))}
         </div>
         <div className={styles.midfielders}>
           {getPlayersByType("Midfielder").map((player) => (
             <div key={player.player._id} className={styles.playerBox}>
-              {player.player.playerName}
+              <div className={styles.playerImg}>
+                <img src={player.player.playerImage} alt="player" />
+              </div>
+              {player.player.playerName.split(" ")[0]
+                ? player.player.playerName.split(" ")[0]
+                : player.player.playerName.split(" ")[1]}
             </div>
           ))}
         </div>
         <div className={styles.defenders}>
           {getPlayersByType("Defender").map((player) => (
             <div key={player.player._id} className={styles.playerBox}>
-              {player.player.playerName}
+              <div className={styles.playerImg}>
+                <img src={player.player.playerImage} alt="player" />
+              </div>
+              {player.player.playerName.split(" ")[0]
+                ? player.player.playerName.split(" ")[0]
+                : player.player.playerName.split(" ")[1]}
             </div>
           ))}
         </div>
         <div className={styles.goalkeepers}>
           {getPlayersByType("Goalkeeper").map((player) => (
             <div key={player.player._id} className={styles.playerBox}>
-              {player.player.playerName}
+              <div className={styles.playerImg}>
+                <img src={player.player.playerImage} alt="player" />
+              </div>
+              {player.player.playerName.split(" ")[0]
+                ? player.player.playerName.split(" ")[0]
+                : player.player.playerName.split(" ")[1]}
             </div>
           ))}
         </div>
