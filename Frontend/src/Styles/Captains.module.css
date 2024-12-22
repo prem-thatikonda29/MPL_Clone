@@ -18,8 +18,8 @@
   background: #2a2a2a;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  padding: 1.5rem;
-  width: 250px;
+  padding: 1rem;
+  width: 180px; /* Reduced width for smaller cards */
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -38,13 +38,13 @@
 
 .captainCard h3 {
   color: #ffffff;
-  font-size: 1.5rem;
+  font-size: 1.2rem; /* Reduced font size */
   margin-bottom: 0.5rem;
 }
 
 .captainCard p {
   color: #cccccc;
-  font-size: 0.9rem;
+  font-size: 0.8rem; /* Reduced font size */
   margin: 0.2rem 0;
 }
 
@@ -52,7 +52,7 @@
   background: #ff3333;
   color: #fff;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem; /* Adjusted padding for a smaller button */
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -62,9 +62,45 @@
   background: #ff5555;
 }
 
+.selected {
+  background-color: #d3f8d3; /* Light green to indicate selection */
+  border-color: #4caf50;
+}
+
+button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
 /* Responsive Layout */
 @media (min-width: 768px) {
   .captainsList {
     justify-content: center;
   }
+}
+
+/* Group title styling */
+.playerGroup h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+.saveContainer {
+  margin-top: 20px;
+}
+
+.saveButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.saveButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
