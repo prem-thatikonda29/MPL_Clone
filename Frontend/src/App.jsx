@@ -9,6 +9,7 @@ import Wallet from "./Pages/Wallet";
 import Profile from "./Pages/Profile";
 import TeamSelection from "./Pages/TeamSelection";
 import Contests from "./Pages/Contests";
+import Captains from "./Pages/Captains";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/contests" element={<Contests />} />;
           <Route path="/contests/:contestId" element={<TeamSelection />} />;
+          <Route path="/chooseCaptain/:teamId" element={<Captains />} />;
         </Routes>
       </Router>
     </UserProvider>

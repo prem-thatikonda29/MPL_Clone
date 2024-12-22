@@ -26,6 +26,12 @@ const FantasyTeamSchema = new mongoose.Schema({
       },
     },
   ],
+
+  captain: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "players",
+    default: null,
+  },
 });
 
 const FantasyTeamModel = mongoose.model("fantasyTeams", FantasyTeamSchema);

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import styles from "../Styles/TeamSelection.module.css";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
 import TeamDetails from "../Components/TeamDetails";
 
@@ -12,6 +12,7 @@ function TeamSelection() {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const { user } = useContext(UserContext);
   const isSaveDisabled = selectedPlayers.length !== 11;
+  const nav = useNavigate();
 
   useEffect(() => {
     fetch(`http://localhost:8000/contests/${params.contestId}`)
@@ -41,6 +42,7 @@ function TeamSelection() {
   };
 
   const handleSaveTeam = async () => {
+    console.log("clicked");
     if (!user) {
       console.error("User is not authenticated");
       return;
@@ -61,7 +63,7 @@ function TeamSelection() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            team: teamData, // Sending team data in the correct format
+            team: teamData,
             contestId: params.contestId,
             userId: user._id,
           }),
@@ -69,10 +71,12 @@ function TeamSelection() {
       );
 
       const data = await response.json();
+      // console.log("Team saved successfully:", data.fantasyTeam);
+      console.log("Fantasy Team ID:", data.fantasyTeam._id);
       if (response.ok) {
-        console.log("Team saved successfully:", data);
+        console.log("Team saved successfully:", data.fantasyTeam);
         // Handle successful save (e.g., redirect to another page)
-        
+        nav(`/chooseCaptain/${data.fantasyTeam._id}`);
       } else {
         console.error("Failed to save team:", data);
       }
