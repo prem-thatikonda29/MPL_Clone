@@ -52,8 +52,8 @@ const Register = () => {
 
           // Store user in localstorage for persisting on reloads
           localStorage.setItem("user", JSON.stringify(data.user));
-          
-          // Logging the user data for verification 
+
+          // Logging the user data for verification
           // console.log("User Data:", data.user);
 
           // Redirect to home page or any page after successful registration
@@ -71,10 +71,12 @@ const Register = () => {
     <section className={styles.container}>
       <LeftContainer />
       <div className={styles.form}>
-        <h1>Registration</h1>
+        <h1 className={styles.heading}>Registration</h1>
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name" className={styles.label}>
+              Name
+            </label>
             <input
               type="text"
               id="name"
@@ -87,7 +89,9 @@ const Register = () => {
             />
           </div>
           <div>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email" className={styles.label}>
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -100,7 +104,9 @@ const Register = () => {
             />
           </div>
           <div>
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username" className={styles.label}>
+              Username
+            </label>
             <input
               type="text"
               id="username"
@@ -113,7 +119,9 @@ const Register = () => {
             />
           </div>
           <div>
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
             <input
               type="password"
               id="password"

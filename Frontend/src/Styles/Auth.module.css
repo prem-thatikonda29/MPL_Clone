@@ -23,13 +23,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* Center form contents */
   background-color: #e3e3e3;
   padding: 2rem;
-  /* box-shadow: 0 8px 8px rgba(0, 0, 0, 0.2); */
   border-radius: 40px 0 0 40px;
-  /* border-left: 4px solid rgb(255, 255, 255, 0.8); */
-  font-family: "Roboto", serif;
+  font-family: "Poppins", serif;
 }
 
 form {
@@ -37,29 +35,31 @@ form {
   max-width: 400px;
 }
 
-h1 {
+.heading {
   margin-bottom: 1.5rem;
   font-size: 2rem;
-  text-align: center;
+  font-weight: 600;
+  text-align: left;
   color: #333;
 }
 
-label {
+.label {
   display: block;
   font-weight: bold;
   margin-bottom: 0.5rem;
   color: #555;
+  text-align: left; /* Ensure labels align to the left */
+  width: 100%; /* Ensure labels span the full width */
 }
 
 input {
-  width: 98%;
+  width: 100%; /* Make input fields span the full width */
   padding: 0.75rem;
   margin-bottom: 1rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
-  /* max-width: 350px; */
 }
 
 input:focus {
@@ -68,7 +68,7 @@ input:focus {
 }
 
 button {
-  width: 98%;
+  width: 100%; /* Button spans full width */
   padding: 0.75rem;
   background: #ff3e3e;
   color: white;
@@ -102,9 +102,8 @@ a:hover {
 
 form div {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: flex-start;
-  flex-flow: column wrap;
   width: 100%;
 }
 

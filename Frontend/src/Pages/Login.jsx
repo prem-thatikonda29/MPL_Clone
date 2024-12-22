@@ -63,10 +63,12 @@ const Login = () => {
     <section className={styles.container}>
       <LeftContainer />
       <div className={styles.form}>
-        <h1>Login</h1>
+        <h1 className={styles.heading}>Login</h1>
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username" className={styles.label}>
+              Username
+            </label>
             <input
               type="text"
               id="username"
@@ -79,7 +81,9 @@ const Login = () => {
             />
           </div>
           <div>
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -92,9 +96,7 @@ const Login = () => {
             />
           </div>
           <div>
-            <a href="/forgot-password" className={styles.forgotLink}>
-              Forgot password?
-            </a>
+            <a className={styles.forgotLink}>Forgot password?</a>
           </div>
           <div>
             <button type="submit">Login</button>
