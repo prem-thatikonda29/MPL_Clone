@@ -36,11 +36,11 @@
 }
 
 .realMadrid {
-  background-image: url("/madrid.png?url");
+  background-image: url("/madrid.png");
 }
 
 .city {
-  background-image: url("/city.png?url");
+  background-image: url("/city.png");
 }
 
 .captainCard:hover {

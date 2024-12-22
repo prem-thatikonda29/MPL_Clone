@@ -1,14 +1,87 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/Captains.module.css";
 import { useNavigate, useParams } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Captains = () => {
   const [players, setPlayers] = useState([]); // Initialize an empty array for players
   const [loading, setLoading] = useState(true); // Track loading state
   const [selectedPlayer, setSelectedPlayer] = useState(null); // Track the selected player
   const [saving, setSaving] = useState(false); // Track save state (loading)
+  const [contest, setContest] = useState({});
+  const [contestName, setContestName] = useState("");
   const params = useParams();
   const nav = useNavigate();
+
+  useEffect(() => {
+    fetch(`http://localhost:8000/fantasyTeams/${params.teamId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Error fetching fantasy team: ${response.statusText}`
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setContest(data.fantasyTeam);
+
+        // Fetch contest name immediately if contestId is available
+        if (data.fantasyTeam.contestId) {
+          return fetch(
+            `http://localhost:8000/contests/${data.fantasyTeam.contestId}`
+          );
+        }
+        throw new Error("contestId is undefined in fantasy team.");
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Error fetching contest name: ${response.statusText}`
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setContestName(data.contest.contestName);
+      })
+      .catch((error) => {
+        console.error("Error fetching contests or fantasy team:", error);
+      });
+  }, [params.teamId]);
+
+  useEffect(() => {
+    if (!contest.contestId) {
+      console.warn("contest.contestId is undefined. Skipping fetch.");
+      return;
+    }
+
+    fetch(`http://localhost:8000/contests/${contest.contestId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error fetching contests: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setContestName(data.contest.contestName);
+      })
+      .catch((error) => {
+        console.error("Error fetching contests:", error);
+      });
+  }, [contest]);
+
+  useEffect(() => {
+    console.log("Contest updated:", contest);
+  }, [contest]);
+
+  useEffect(() => {
+    console.log("contest.contestId:", contest.contestId);
+  }, [contest.contestId]);
+
+  useEffect(() => {
+    console.log("contestName:", contestName);
+  }, [contestName]);
 
   useEffect(() => {
     const fetchTeamPlayers = async () => {
@@ -70,8 +143,13 @@ const Captains = () => {
         );
 
         if (response.ok) {
-          nav("/contests");
-          console.log("Captain saved successfully!");
+          toast.success(`Team added for contest ${contestName} successfully`, {
+            duration: 3000,
+          });
+
+          setTimeout(() => {
+            nav("/home");
+          }, 3000); // Delay navigation by 3 seconds
         } else {
           console.log("Failed to save captain.");
         }
@@ -88,6 +166,7 @@ const Captains = () => {
 
   return (
     <div className={styles.captainsContainer}>
+      <Toaster />
       <h1>Choose Your Captain</h1>
       <div className={styles.captainsList}>
         {loading ? (

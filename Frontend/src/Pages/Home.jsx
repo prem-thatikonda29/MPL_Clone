@@ -12,7 +12,6 @@ const Home = () => {
       fetch(`http://localhost:8000/users/${user._id}`)
         .then((response) => response.json())
         .then((data) => {
-          // console.log("User data fetched");
           console.log("User data fetched:", data);
         })
         .catch((error) => {
@@ -27,8 +26,10 @@ const Home = () => {
 
   return (
     <section className={styles.container}>
-      <Navbar />
-      <Gamegrid />
+      <Navbar className={styles.navbar} />
+      <div className={styles.content}>
+        <Gamegrid />
+      </div>
     </section>
   );
 };

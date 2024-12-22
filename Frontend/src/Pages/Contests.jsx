@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Navbar from "../Components/Navbar";
 import styles from "../Styles/Contests.module.css";
 
 const Contests = () => {
   const [contests, setContests] = useState([]);
-
   const nav = useNavigate();
 
   useEffect(() => {
@@ -35,47 +35,50 @@ const Contests = () => {
   };
 
   return (
-    <section className={styles.section}>
-      {contests.length > 0 ? (
-        contests.map((contest) => (
-          <div key={contest._id.$oid} className={styles.card}>
-            <div className={styles.card__header}>
-              <h4 className={styles.card__header__title}>
-                {contest.teams[0].teamName} VS {contest.teams[1].teamName}
-              </h4>
-              <div className={styles.card__header__date}>
-                {formatDate(contest.contestStartDate)}
+    <section className={styles.container}>
+      <Navbar className={styles.navbar} />
+      <div className={styles.content}>
+        {contests.length > 0 ? (
+          contests.map((contest) => (
+            <div key={contest._id} className={styles.card}>
+              <div className={styles.card__header}>
+                <h4 className={styles.card__header__title}>
+                  {contest.teams[0].teamName} VS {contest.teams[1].teamName}
+                </h4>
+                <div className={styles.card__header__date}>
+                  {formatDate(contest.contestStartDate)}
+                </div>
+              </div>
+              <div className={styles.divider}></div>
+              <div className={styles.card__body}>
+                <div className={styles.card__body__left}>
+                  <p>
+                    <strong>Sport:</strong> {contest.contestSport}
+                  </p>
+                  <p>
+                    <strong>Series:</strong> {contest.contestSeries}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {contest.contestStatus}
+                  </p>
+                </div>
+                <div className={styles.card__body__right}>
+                  <button
+                    className={styles.button}
+                    onClick={() => {
+                      nav(`/contests/${contest._id}`);
+                    }}
+                  >
+                    Participate
+                  </button>
+                </div>
               </div>
             </div>
-            <div className={styles.divider}></div>
-            <div className={styles.card__body}>
-              <div className={styles.card__body__left}>
-                <p>
-                  <strong>Sport:</strong> {contest.contestSport}
-                </p>
-                <p>
-                  <strong>Series:</strong> {contest.contestSeries}
-                </p>
-                <p>
-                  <strong>Status:</strong> {contest.contestStatus}
-                </p>
-              </div>
-              <div className={styles.card__body__right}>
-                <button
-                  className={styles.button}
-                  onClick={() => {
-                    nav(`/contests/${contest._id}`);
-                  }}
-                >
-                  Participate
-                </button>
-              </div>
-            </div>
-          </div>
-        ))
-      ) : (
-        <p>Loading contests...</p>
-      )}
+          ))
+        ) : (
+          <p>Loading contests...</p>
+        )}
+      </div>
     </section>
   );
 };
