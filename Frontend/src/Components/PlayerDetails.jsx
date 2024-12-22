@@ -110,15 +110,25 @@ function PlayerDetails({ playerIds, selectedPlayers, handleSelectPlayer }) {
                 } ${isDisabled ? styles.disabled : ""}`}
                 onClick={!isDisabled ? () => handlePlayerSelection(play) : null}
               >
-                <h3>{play.player.playerName}</h3>
-                <p>Team: {play.player.playerTeam}</p>
-                <p>Type: {play.player.playerType}</p>
-                <p>Price: {play.player.playerPrice}</p>
-                <p>
-                  {selectedPlayers.some((p) => p.player._id === play.player._id)
-                    ? "Selected"
-                    : "Select"}
-                </p>
+                <div className={styles.playerDetails}>
+                  <h3>{play.player.playerName}</h3>
+                  <p>Team: {play.player.playerTeam}</p>
+                  <p>Type: {play.player.playerType}</p>
+                  <p>Price: {play.player.playerPrice}</p>
+                  <p>
+                    {selectedPlayers.some(
+                      (p) => p.player._id === play.player._id
+                    )
+                      ? "Selected"
+                      : "Select"}
+                  </p>
+                </div>
+                <div className={styles.playerImg}>
+                  <img
+                    src={play.player.playerImage}
+                    alt={play.player.playerName}
+                  />
+                </div>
               </div>
             );
           })}
