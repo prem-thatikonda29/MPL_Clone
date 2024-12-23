@@ -12,18 +12,19 @@ function FlappyBird() {
     Number(localStorage.getItem("highScore")) || 0
   );
   const [isGameOver, setIsGameOver] = useState(false);
-  const [gameStarted, setGameStarted] = useState(false); // Control game start
+  const [gameStarted, setGameStarted] = useState(false);
+  const [pipePassed, setPipePassed] = useState(false);
+  const [username, setUsername] = useState("");
+  const [leaderboard, setLeaderboard] = useState([]);
+  const { user } = useContext(UserContext);
+
+  const gameId = "675bebfc39d9ec117ca4b4cb";
   const gameHeight = 600;
   const gameWidth = 400;
   const pipeWidth = 50;
   const birdSize = 40;
-  const [pipePassed, setPipePassed] = useState(false);
-  const [username, setUsername] = useState("");
-  const { user } = useContext(UserContext);
 
-  const gameId = "675bebfc39d9ec117ca4b4cb";
-
-  // Fetch leaderboard and username
+  // Fetch leaderboard and user details
   useEffect(() => {
     if (user) {
       fetch(`http://localhost:8000/leaderboards/${gameId}`, {
@@ -38,16 +39,14 @@ function FlappyBird() {
           const userEntry = data.leaderboard.find(
             (entry) => entry.userId.toString() === user._id.toString()
           );
-
-          if (userEntry) {
-            setUsername(userEntry.username);
-            setHighScore(userEntry.highscore);
-          } else {
-            setUsername(user.username);
-            setHighScore(0);
-          }
+          setUsername(userEntry?.username || user.username);
+          setHighScore(userEntry?.highscore || 0);
+          const sortedLeaderboard = data.leaderboard.sort((a, b) => {
+            return b.highscore - a.highscore;
+          });
+          setLeaderboard(sortedLeaderboard);
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) => console.error("Error fetching leaderboard:", error));
     }
   }, [user]);
 
@@ -136,9 +135,9 @@ function FlappyBird() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({
-        gameId: "675bebfc39d9ec117ca4b4cb",
+        gameId,
         userId: user._id,
-        username: user.username,
+        username,
         highscore: newHighScore,
       }),
     })
@@ -151,56 +150,72 @@ function FlappyBird() {
   };
 
   return (
-    <div
-      className={styles.game}
-      style={{ height: gameHeight, width: gameWidth }}
-    >
-      {!gameStarted && (
-        <div className={styles.start_screen}>
-          <p>Welcome to Flappy Bird!</p>
-          <button onClick={startGame}>Start Game</button>
-        </div>
-      )}
+    <section className={styles.container}>
+      <div
+        className={styles.game}
+        style={{ height: gameHeight, width: gameWidth }}
+      >
+        {!gameStarted && (
+          <div className={styles.start_screen}>
+            <p>Welcome to Flappy Bird!</p>
+            <button onClick={startGame}>Start Game</button>
+          </div>
+        )}
 
-      {gameStarted && (
-        <>
-          <div
-            className={styles.bird}
-            style={{
-              top: birdPosition,
-              height: birdSize,
-              width: birdSize,
-            }}
-          ></div>
-          <div
-            className={styles.pipe}
-            style={{
-              height: pipeHeight,
-              width: pipeWidth,
-              left: pipeLeft,
-              top: 0,
-            }}
-          ></div>
-          <div
-            className={styles.pipe}
-            style={{
-              height: gameHeight - pipeHeight - 150,
-              width: pipeWidth,
-              left: pipeLeft,
-              bottom: 0,
-            }}
-          ></div>
-          <div className={styles.score}>Score: {score}</div>
-          <div className={styles.high_score}>High Score: {highScore}</div>
-          {isGameOver && (
-            <div className={styles.game_over}>
-              <p>Game Over!</p>
-              <button onClick={startGame}>Restart</button>
+        {gameStarted && (
+          <>
+            <div
+              className={styles.bird}
+              style={{
+                top: birdPosition,
+                height: birdSize,
+                width: birdSize,
+              }}
+            ></div>
+            <div
+              className={styles.pipe}
+              style={{
+                height: pipeHeight,
+                width: pipeWidth,
+                left: pipeLeft,
+                top: 0,
+              }}
+            ></div>
+            <div
+              className={styles.pipe}
+              style={{
+                height: gameHeight - pipeHeight - 150,
+                width: pipeWidth,
+                left: pipeLeft,
+                bottom: 0,
+              }}
+            ></div>
+            <div className={styles.score}>Score: {score}</div>
+            <div className={styles.high_score}>High Score: {highScore}</div>
+            {isGameOver && (
+              <div className={styles.game_over}>
+                <p>Game Over!</p>
+                <button onClick={startGame}>Restart</button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      <div className={styles.leaderboard}>
+        <h2>Leaderboard</h2>
+        {leaderboard.length > 0 ? (
+          leaderboard.map((entry, index) => (
+            <div key={index} className={styles.leaderboard_entry}>
+              <p>
+                {entry.username} - {entry.highscore}
+              </p>
             </div>
-          )}
-        </>
-      )}
-    </div>
+          ))
+        ) : (
+          <p>Loading leaderboard...</p>
+        )}
+      </div>
+    </section>
   );
 }
 
