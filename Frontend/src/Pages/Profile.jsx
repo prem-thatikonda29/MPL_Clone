@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import Navbar from "../Components/Navbar";
+import Navbar from "../Components/Navbar"; // Assuming Navbar is in the Components folder
 import styles from "../Styles/Profile.module.css";
 import { UserContext } from "../userContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,10 +17,8 @@ const Profile = () => {
     name: false,
   });
 
-  // Sync formData with user data
   useEffect(() => {
     if (user) {
-      console.log(user);
       setFormData({
         name: user.name || "",
         username: user.username || "",
@@ -38,7 +36,6 @@ const Profile = () => {
 
   const toggleEdit = (field) => {
     if (isEditable[field]) {
-      // If already editable, save the data
       handleSave();
     }
     setIsEditable((prev) => ({
@@ -48,7 +45,6 @@ const Profile = () => {
   };
 
   const handleSave = () => {
-    // Ensure formData includes username and fields to update
     if (!formData.username) {
       alert("Username is required");
       return;
@@ -65,10 +61,9 @@ const Profile = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.statuscode === 200) {
-          // If the update is successful, update the context with the new name
           setUser((prevUser) => ({
-            ...prevUser, // Ensure you're keeping all the other properties of the user
-            name: formData.name, // Update only the name property
+            ...prevUser,
+            name: formData.name,
           }));
           alert("Profile updated successfully!");
         } else {
@@ -79,83 +74,78 @@ const Profile = () => {
   };
 
   if (!user) {
-    return <div>Loading...</div>; // Add a loading spinner here
+    return <div>Loading...</div>;
   }
 
   return (
     <section className={styles.container}>
-      <Navbar />
-      <div className={styles.profileBox}>
-        {/* Left Section */}
-        <div className={styles.profilePicBox}>
-          <div className={styles.profilePic}></div>
-          <div className={styles.profileChoices}>
-            <div className={styles.profileAlt}></div>
-            <div className={styles.profileAlt}></div>
-            <div className={styles.profileAlt}></div>
-            <div className={styles.profileAlt}></div>
+      <Navbar className={styles.navbar} />
+      <div className={styles.profileContent}>
+        <div className={styles.profileBox}>
+          {/* Profile Picture and Details */}
+          <div className={styles.profilePicBox}>
+            <div className={styles.profilePic}></div>
+            {/* <div className={styles.profileChoices}> */}
+              {/* <div className={styles.profileAlt}></div>
+              <div className={styles.profileAlt}></div>
+              <div className={styles.profileAlt}></div>
+              <div className={styles.profileAlt}></div> */}
+            {/* </div> */}
           </div>
-        </div>
-
-        {/* Right Section */}
-        <div className={styles.profileDetailsBox}>
-          <div className={styles.detail}>
-            <label htmlFor="name">Name:</label>
-            <div className={styles.inputWrapper}>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={styles.inputField}
-                disabled={!isEditable.name}
-              />
-              <span
-                className={styles.editIcon}
-                onClick={() => toggleEdit("name")}
-              >
-                <FontAwesomeIcon
-                  icon={isEditable.name ? faFloppyDisk : faPen}
-                  className={styles.icon}
+          <div className={styles.profileDetailsBox}>
+            <div className={styles.detail}>
+              <label htmlFor="name">Name:</label>
+              <div className={styles.inputWrapper}>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={styles.inputField}
+                  disabled={!isEditable.name}
                 />
-              </span>
+                <span
+                  className={styles.editIcon}
+                  onClick={() => toggleEdit("name")}
+                >
+                  <FontAwesomeIcon
+                    icon={isEditable.name ? faFloppyDisk : faPen}
+                    className={styles.icon}
+                  />
+                </span>
+              </div>
             </div>
-          </div>
-
-          {/* Username is not editable */}
-          <div className={styles.detail}>
-            <label htmlFor="username">Username:</label>
-            <div className={styles.inputWrapper}>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className={styles.inputField}
-                disabled
-              />
+            <div className={styles.detail}>
+              <label htmlFor="username">Username:</label>
+              <div className={styles.inputWrapper}>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  className={styles.inputField}
+                  disabled
+                />
+              </div>
             </div>
-          </div>
-
-          <div className={styles.detail}>
-            <label htmlFor="walletBalance">Wallet Balance:</label>
-            <div className={styles.inputWrapper}>
-              <input
-                type="number"
-                id="walletBalance"
-                name="walletBalance"
-                value={formData.walletBalance}
-                className={styles.inputField}
-                disabled
-              />
+            <div className={styles.detail}>
+              <label htmlFor="walletBalance">Wallet Balance:</label>
+              <div className={styles.inputWrapper}>
+                <input
+                  type="number"
+                  id="walletBalance"
+                  name="walletBalance"
+                  value={formData.walletBalance}
+                  className={styles.inputField}
+                  disabled
+                />
+              </div>
             </div>
+            <button className={styles.saveButton} onClick={handleSave}>
+              Save All Changes
+            </button>
           </div>
-
-          <button className={styles.saveButton} onClick={handleSave}>
-            Save All Changes
-          </button>
         </div>
       </div>
     </section>

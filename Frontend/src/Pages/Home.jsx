@@ -28,9 +28,9 @@ const Home = () => {
   return (
     <section className={styles.container}>
       <Navbar className={styles.navbar} />
-      <div className={styles.content}>
-        <Gamegrid />
-        <Notifications />
+      <div className={styles.mainContent}>
+        <Gamegrid className={styles.gameGrid} />
+        <Notifications className={styles.notifications} />
       </div>
     </section>
   );
