@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../userContext";
 import styles from "./FlappyBird.module.css";
+import toast from "react-hot-toast";
 
 function FlappyBird() {
   const [birdPosition, setBirdPosition] = useState(300);
@@ -142,7 +143,10 @@ function FlappyBird() {
       }),
     })
       .then((response) => response.json())
-      .then((data) => console.log("Leaderboard updated:", data))
+      .then((data) => {
+        console.log("Leaderboard updated:", data);
+        toast.success("Leaderboard updated");
+      })
       .catch((error) => console.error("Error updating leaderboard:", error));
   };
 

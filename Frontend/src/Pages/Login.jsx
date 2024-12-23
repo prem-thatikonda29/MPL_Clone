@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
 import styles from "../Styles/Auth.module.css";
 import LeftContainer from "../Components/LeftContainer.jsx";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const nav = useNavigate();
@@ -46,6 +47,8 @@ const Login = () => {
           localStorage.setItem("user", JSON.stringify(data.user));
 
           setUser(data.user);
+
+          toast.success("Login successful");
 
           // Redirect to home page
           nav("/home");

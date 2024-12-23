@@ -4,6 +4,7 @@ import { UserContext } from "../userContext";
 
 import LeftContainer from "../Components/LeftContainer";
 import styles from "../Styles/Auth.module.css";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const nav = useNavigate();
@@ -57,6 +58,8 @@ const Register = () => {
           // console.log("User Data:", data.user);
 
           // Redirect to home page or any page after successful registration
+          toast.success("Registration successful");
+
           nav("/home");
         } else {
           console.error("User data is missing in the response");
