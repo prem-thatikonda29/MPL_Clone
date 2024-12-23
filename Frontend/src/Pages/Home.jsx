@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { UserContext } from "../userContext";
 import Navbar from "../Components/Navbar";
+import Notifications from "../Components/Notifications";
 import Gamegrid from "../Components/Gamegrid";
 import styles from "../Styles/Home.module.css";
 
@@ -29,6 +30,7 @@ const Home = () => {
       <Navbar className={styles.navbar} />
       <div className={styles.content}>
         <Gamegrid />
+        <Notifications />
       </div>
     </section>
   );

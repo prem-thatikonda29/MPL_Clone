@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import styles from "../Styles/Captains.module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { UserContext } from "../userContext.jsx";
+
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import db from "../firebase/firebase"; // Adjust the path based on your Firebase configuration file
 
 const Captains = () => {
   const [players, setPlayers] = useState([]); // Initialize an empty array for players
@@ -10,6 +14,7 @@ const Captains = () => {
   const [saving, setSaving] = useState(false); // Track save state (loading)
   const [contest, setContest] = useState({});
   const [contestName, setContestName] = useState("");
+  const { user } = useContext(UserContext);
   const params = useParams();
   const nav = useNavigate();
 
@@ -127,6 +132,7 @@ const Captains = () => {
     if (selectedPlayer) {
       try {
         setSaving(true);
+
         // Send the selected captain to the server to update the fantasy team
         const response = await fetch(
           `http://localhost:8000/fantasyTeams/updateCaptain/${params.teamId}`,
@@ -143,10 +149,24 @@ const Captains = () => {
         );
 
         if (response.ok) {
-          toast.success(`Team added for contest ${contestName} successfully`, {
-            duration: 3000,
-          });
+          // Toast success message
+          const message = `Team added for contest ${contestName} successfully`;
+          toast.success(message, { duration: 3000 });
 
+          // Add notification to Firestore
+          try {
+            await addDoc(collection(db, "notifications"), {
+              userId: user._id,
+              title: "Captain Selected",
+              message,
+              timestamp: serverTimestamp(),
+            });
+            console.log("Notification added to Firestore successfully.");
+          } catch (err) {
+            console.error("Error adding notification to Firestore:", err);
+          }
+
+          // Navigate to home after delay
           setTimeout(() => {
             nav("/home");
           }, 3000); // Delay navigation by 3 seconds
@@ -155,7 +175,6 @@ const Captains = () => {
         }
       } catch (err) {
         console.error("Error saving captain:", err);
-        // alert("Error saving captain.");
       } finally {
         setSaving(false);
       }
